@@ -1,0 +1,39 @@
+{
+  "date": "2026-03-24",
+  "week": 1,
+  "phase": "accumulation",
+  "session_rpe": 7.0,
+  "notes": "test",
+  "exercises": [
+    {
+      "name": "Squat",
+      "sets": [
+        {
+          "weight_kg": 100.0,
+          "reps": 5,
+          "rpe": 8.0
+        },
+        {
+          "weight_kg": 102.5,
+          "reps": 5,
+          "rpe": 8.5
+        }
+      ]
+    },
+    {
+      "name": "Bench",
+      "sets": [
+        {
+          "weight_kg": 80.0,
+          "reps": 5,
+          "rpe": 7.0
+        },
+        {
+          "weight_kg": 82.5,
+          "reps": 6,
+          "rpe": 2.0
+        }
+      ]
+    }
+  ]
+}
