@@ -5,12 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PERIODIZE</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.30.0/date_fns.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
 
   :root {
     --bg:#0a0a0a; --surface:#111111; --surface2:#1a1a1a; --border:#2a2a2a;
-    --accent:#e8ff47; --text:#f0f0f0; --muted:#444; --muted2:#777;
+    --accent:#e8ff47; --text:#f0f0f0; --muted:#333; --muted2:#777;
     --danger:#ff4444; --good:#47ff8a;
     --acc:#4a9eff; --str:#47ff8a; --pek:#ff6b35;
   }
@@ -48,8 +50,7 @@
   .card-label{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.4rem;}
   .card-value{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--accent);letter-spacing:0.05em;line-height:1;}
   .card-sub{font-size:0.72rem;color:var(--muted2);margin-top:0.25rem;}
-  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.75rem;}
-  .stat-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.6rem;margin-bottom:0.75rem;}
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.6rem;margin-bottom:0.75rem;}
   .section-title{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:0.15em;color:var(--muted2);margin-bottom:0.6rem;}
   .empty-state{text-align:center;color:var(--muted2);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;padding:3rem 1rem;line-height:1.8;}
   .loading{text-align:center;color:var(--muted2);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;padding:2rem;animation:pulse 1.5s ease-in-out infinite;}
@@ -68,43 +69,41 @@
   .set-chip{background:var(--surface2);border:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:0.68rem;padding:0.18rem 0.4rem;border-radius:2px;color:var(--text);}
   .set-num{color:var(--muted2);margin-right:0.2rem;}
 
-  /* RECENCY BADGE */
-  .recency-tag{font-family:'IBM Plex Mono',monospace;font-size:0.62rem;color:var(--bg);padding:0.15rem 0.4rem;border-radius:2px;font-weight:600;white-space:nowrap;}
-  .recency-latest{background:var(--accent);color:var(--bg);}
-  .recency-2nd{background:#888;color:var(--bg);}
-  .recency-3rd{background:#444;color:#aaa;}
+  /* RECENCY */
+  .recency-latest{font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:var(--bg);background:var(--accent);padding:0.12rem 0.35rem;border-radius:2px;font-weight:600;white-space:nowrap;}
 
-  /* ── TUBE MAP ── */
+  /* ── TUBE MAP ────────────────────────────────────────── */
+  /*
+    Per phase: 4 milestone dots + 3 small dots between each pair = 4 + 9 = 13 stations
+    Only completed stations are coloured. Future stations are very dim.
+    No rings — milestone dots are just larger filled circles.
+    Unvisited phases are entirely dim — no colour shown until you enter that phase.
+  */
   .cycle-wrap{background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:1rem;margin-bottom:0.75rem;}
-  .cycle-title-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.9rem;}
+  .cycle-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.85rem;}
   .cycle-label{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted2);text-transform:uppercase;letter-spacing:0.1em;}
-  .cycle-status{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted2);text-align:right;max-width:55%;}
+  .cycle-status{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted2);text-align:right;}
   .cycle-complete{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:0.75rem;color:var(--accent);padding:0.5rem 0;letter-spacing:0.08em;}
 
-  /* scrollable tube */
-  .tube-scroll{overflow-x:auto;padding-bottom:0.25rem;}
-  .tube-map{display:flex;align-items:flex-end;min-width:min-content;padding:0.25rem 0 0.1rem;}
+  .tube-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .tube-map{display:flex;align-items:center;min-width:min-content;padding:1.6rem 0.2rem 0.4rem;}
 
-  /* phase column */
-  .tube-phase{display:flex;flex-direction:column;align-items:flex-start;}
-  .tube-phase-label{font-family:'IBM Plex Mono',monospace;font-size:0.58rem;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.55rem;white-space:nowrap;}
+  /* phase group */
+  .t-phase{display:flex;flex-direction:column;align-items:flex-start;}
+  .t-phase-lbl{font-family:'IBM Plex Mono',monospace;font-size:0.58rem;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.55rem;white-space:nowrap;}
+  .t-track{display:flex;align-items:center;}
 
-  /* the horizontal track row */
-  .tube-track{display:flex;align-items:center;}
-
-  /* milestone dot (large) */
-  .t-dot-lg{width:20px;height:20px;border-radius:50%;border:2.5px solid;flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative;transition:box-shadow 0.2s;}
-  .t-dot-lg.current{box-shadow:0 0 0 3px var(--bg),0 0 0 5px currentColor;}
-  .t-dot-inner{width:8px;height:8px;border-radius:50%;transition:opacity 0.3s;}
+  /* milestone dot — large filled circle */
+  .t-m{width:22px;height:22px;border-radius:50%;flex-shrink:0;transition:opacity 0.2s;}
 
   /* small workout dot */
-  .t-dot-sm{width:9px;height:9px;border-radius:50%;flex-shrink:0;border:1.5px solid;}
+  .t-s{width:9px;height:9px;border-radius:50%;flex-shrink:0;transition:opacity 0.2s;}
 
-  /* connecting line segment */
-  .t-line{height:3px;flex-shrink:0;}
+  /* connecting line */
+  .t-ln{height:3px;flex-shrink:0;}
 
-  /* inter-phase gap */
-  .tube-gap{width:14px;height:3px;background:var(--border);flex-shrink:0;margin-bottom:8.5px;}/* align with track */
+  /* inter-phase bridge */
+  .t-bridge{width:18px;height:3px;background:var(--border);flex-shrink:0;}
 
   /* PHILOSOPHY */
   .philosophy-display{background:var(--surface2);border:1px solid var(--border);border-radius:2px;padding:1rem;font-size:0.85rem;line-height:1.7;color:var(--text);white-space:pre-wrap;min-height:72px;cursor:pointer;transition:border-color 0.2s;}
@@ -115,15 +114,15 @@
   .philosophy-hint{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted2);}
   .phil-btn-row{display:flex;gap:0.5rem;}
   .btn-sm{background:var(--accent);color:var(--bg);border:none;border-radius:2px;padding:0.4rem 0.9rem;font-family:'Bebas Neue',sans-serif;font-size:0.9rem;letter-spacing:0.1em;cursor:pointer;}
-  .btn-sm.ghost{background:transparent;color:var(--muted2);border:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;letter-spacing:0.05em;}
+  .btn-sm.ghost{background:transparent;color:var(--muted2);border:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;}
 
   /* PROGRESS */
   .progress-ex-block{margin-bottom:0.75rem;}
   .progress-ex-title{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:0.12em;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:0.35rem;margin-bottom:0.5rem;}
   .recent-session-row{display:flex;align-items:flex-start;gap:0.75rem;padding:0.5rem 0;border-bottom:1px solid var(--border);}
   .recent-session-row:last-child{border-bottom:none;}
-  .rs-left{display:flex;flex-direction:column;gap:0.3rem;min-width:72px;}
-  .rs-date{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--muted2);white-space:nowrap;line-height:1.4;}
+  .rs-date-col{display:flex;align-items:center;gap:0.4rem;min-width:90px;flex-shrink:0;}
+  .rs-date{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--muted2);white-space:nowrap;}
   .rs-sets{display:flex;flex-wrap:wrap;gap:0.35rem;flex:1;padding-top:0.1rem;}
 
   /* PR */
@@ -154,7 +153,7 @@
   .status-msg.err{color:var(--danger);}
 
   /* FOOTNOTE */
-  .footnote{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);padding:0.45rem 1rem;font-family:'IBM Plex Mono',monospace;font-size:0.62rem;color:var(--muted);text-align:center;z-index:200;}
+  .footnote{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);padding:0.45rem 1rem;font-family:'IBM Plex Mono',monospace;font-size:0.62rem;color:var(--muted2);text-align:center;z-index:200;}
 </style>
 </head>
 <body>
@@ -251,8 +250,8 @@ async function loadAllWorkouts(){
   try{
     let files=[];
     try{const f=await ghGet('logs/json');files=Array.isArray(f)?f.filter(x=>x.name.endsWith('.json')):[];}catch(e){}
-    const workouts=await Promise.all(files.map(async f=>{const d=await ghGet(`logs/json/${f.name}`);return JSON.parse(b64d(d.content));}));
-    ALL_WORKOUTS=workouts.sort((a,b)=>a.date.localeCompare(b.date));
+    const ws=await Promise.all(files.map(async f=>{const d=await ghGet(`logs/json/${f.name}`);return JSON.parse(b64d(d.content));}));
+    ALL_WORKOUTS=ws.sort((a,b)=>a.date.localeCompare(b.date));
     updateHeaderMeta();
     renderDashboard();
     renderProgress();
@@ -271,15 +270,8 @@ function updateHeaderMeta(){
 }
 
 // ── HELPERS ───────────────────────────────────────────────
-const CORE=['accumulation','strength','peaking'];
-function isCore(p){return CORE.includes((p||'').toLowerCase());}
-function phaseColor(p){
-  const k=(p||'').toLowerCase();
-  if(k==='accumulation')return'var(--acc)';
-  if(k==='strength')return'var(--str)';
-  if(k==='peaking')return'var(--pek)';
-  return'var(--muted2)';
-}
+const CORE_PHASES=['accumulation','strength','peaking'];
+function isCore(p){return CORE_PHASES.includes((p||'').toLowerCase());}
 function badgeClass(p){
   const k=(p||'').toLowerCase();
   if(k==='accessory')return'phase-badge accessory';
@@ -297,152 +289,158 @@ function totalVolume(){
 function weeklyVolume(weekNum){
   return ALL_WORKOUTS.filter(w=>w.week===weekNum).reduce((t,w)=>t+w.exercises.reduce((et,ex)=>et+ex.sets.reduce((st,s)=>st+s.weight_kg*s.reps,0),0),0);
 }
-function daysBetween(d1,d2){return Math.round((new Date(d2)-new Date(d1))/(1000*60*60*24));}
 
 // ── TUBE MAP ──────────────────────────────────────────────
 /*
-  Layout per phase (e.g. accumulation):
-  Each milestone = 3 core workouts → 4 milestones per phase (12 core workouts completes a phase)
-  Between consecutive milestones: up to 2 small dots (workouts 1 & 2 within that bracket)
-  So the track for one phase looks like:
-    [MILESTONE] --sm-- --sm-- [MILESTONE] --sm-- --sm-- [MILESTONE] ...
+  Structure per phase:
+    4 milestone dots (M0, M1, M2, M3) — one per week
+    3 small dots between each consecutive pair of milestones (S1, S2, S3 per gap)
+    So a phase track = M0 — S1 S2 S3 — M1 — S1 S2 S3 — M2 — S1 S2 S3 — M3
+    = 13 stations total
+
+  Milestone M_i is "reached" when the phase has >= i*3 + (i>0?1:0)... 
+  Simpler: we treat the phase as a flat sequence of 13 stations:
+    station 0  = M0  (start, reached immediately when phase begins i.e. count>=1... actually M0 lights up with first workout)
+    station 1  = S1 (workout 2 in phase)
+    station 2  = S2 (workout 3)
+    station 3  = M1 (after 3 workouts = end of week 1)
+    station 4  = S1 (workout 4)
+    station 5  = S2 (workout 5)
+    station 6  = S3... wait — 3 smalls between milestones, so:
+
+  Actually let's re-map cleanly.
+  Stations 0-12 for a phase:
+    0:  M0   — lit when count >= 1  (you showed up, week 1 starts)
+    1:  S    — lit when count >= 2
+    2:  S    — lit when count >= 3
+    3:  M1   — lit when count >= 4  (end of week 1 / start of week 2 checkpoint... 
+                actually: milestone = week boundary = after every 3 workouts)
   
-  We sequence the core workouts for each phase, then map them to positions.
+  Let me redefine cleanly:
+    Milestones at positions 0,3,6,9  (every 3rd station, 0-indexed, 4 milestones)
+    Small dots at positions 1,2, 4,5, 7,8, 10,11, 12... 
+    
+  Hmm, let me think of it differently:
+    M0 at index 0: reached when total_in_phase >= 1
+    S at index 1:  reached when total_in_phase >= 2
+    S at index 2:  reached when total_in_phase >= 3
+    M1 at index 3: reached when total_in_phase >= 4  ← 4th workout = new week checkpoint
+    S at index 4:  reached when total_in_phase >= 5
+    S at index 5:  reached when total_in_phase >= 6
+    M2 at index 6: reached when total_in_phase >= 7
+    S at index 7:  reached when total_in_phase >= 8
+    S at index 8:  reached when total_in_phase >= 9
+    M3 at index 9: reached when total_in_phase >= 10
+    S at index 10: reached when total_in_phase >= 11
+    S at index 11: reached when total_in_phase >= 12
+    END (phase complete after 12 workouts, 4 weeks × 3 workouts)
+
+  So 10 stations (0-9) where milestones are at 0,3,6,9 and smalls elsewhere.
+  Plus 2 trailing smalls after final milestone (10,11) — but do we need those? 
+  The cycle completes at 12 workouts. After M3 (index 9, needs 10 workouts), 
+  workouts 11 and 12 fill the trailing smalls.
+
+  Final: 12 stations total (indices 0-11), milestone at 0,3,6,9, smalls elsewhere.
+  Station i is lit when total_in_phase > i (i.e. you need i+1 workouts to light station i).
+  Special: station 0 lights immediately with the 1st workout (>= 1).
+  
+  Actually simplest rule: station i (0-indexed) is LIT if total_in_phase >= i+1.
+  Phase complete when total_in_phase >= 12.
 */
-function computeCycle(){
-  const phaseDefs=[
-    {key:'accumulation',label:'Accumulation',color:'var(--acc)'},
-    {key:'strength',    label:'Strength',    color:'var(--str)'},
-    {key:'peaking',     label:'Peaking',     color:'var(--pek)'},
-  ];
 
-  // gather ordered core workouts per phase
-  const coreByPhase={accumulation:[],strength:[],peaking:[]};
-  ALL_WORKOUTS.forEach(w=>{
-    const k=(w.phase||'').toLowerCase();
-    if(coreByPhase[k])coreByPhase[k].push(w);
-  });
-
-  const phases=phaseDefs.map(pd=>{
-    const workouts=coreByPhase[pd.key]; // ordered by date
-    const total=workouts.length;
-    // milestone index = floor(total/3), capped at 4 (phase done)
-    const milestoneIndex=Math.min(Math.floor(total/3),4);
-    const posWithinBracket=total%3; // 0,1,2 — position after last milestone
-    const complete=milestoneIndex>=4;
-    return{...pd,workouts,total,milestoneIndex,posWithinBracket,complete};
-  });
-
-  const allComplete=phases.every(p=>p.complete);
-  return{phases,allComplete};
-}
+const STATIONS=12; // per phase
+const MILESTONE_INDICES=new Set([0,3,6,9]); // 4 milestones
 
 function renderCycleHTML(){
-  const{phases,allComplete}=computeCycle();
+  const phaseDefs=[
+    {key:'accumulation',label:'Accumulation',cssVar:'var(--acc)'},
+    {key:'strength',    label:'Strength',    cssVar:'var(--str)'},
+    {key:'peaking',     label:'Peaking',     cssVar:'var(--pek)'},
+  ];
+
+  // count core workouts per phase
+  const counts={accumulation:0,strength:0,peaking:0};
+  ALL_WORKOUTS.forEach(w=>{
+    const k=(w.phase||'').toLowerCase();
+    if(counts[k]!==undefined)counts[k]++;
+  });
+
+  const phases=phaseDefs.map(pd=>({...pd,count:counts[pd.key]}));
+  const allComplete=phases.every(p=>p.count>=STATIONS);
 
   if(allComplete){
     return`<div class="cycle-wrap">
-      <div class="cycle-title-row"><span class="cycle-label">Training Cycle</span></div>
+      <div class="cycle-top"><span class="cycle-label">Training Cycle</span></div>
       <div class="cycle-complete">🏁 Cycle complete — rest, reflect, reset</div>
     </div>`;
   }
 
-  // status text
+  // status: find current active phase
   let statusText='';
   for(const ph of phases){
-    if(!ph.complete){
-      const remaining=3-ph.posWithinBracket;
-      const mNum=ph.milestoneIndex+1;
-      statusText=`${ph.label} ${mNum}/4 · ${remaining} to next`;
+    if(ph.count<STATIONS){
+      // which station are we on?
+      const stationsDone=Math.min(ph.count,STATIONS);
+      // which week are we in?
+      const weekNum=Math.floor(ph.count/3)+1; // 1-indexed, capped at 4
+      const withinWeek=ph.count%3;
+      const remaining=3-withinWeek;
+      statusText=`${ph.label} W${Math.min(weekNum,4)} · ${remaining} workout${remaining!==1?'s':''} to next`;
       break;
     }
   }
 
-  /*
-    For each phase we render 4 milestone dots with 2 small dots between each.
-    Total nodes per phase: 4 milestones + 3 gaps × 2 small dots = 4+6 = 10 visual elements on the track
-    We also have line segments connecting everything.
-
-    Node indices (0-based core workout count → node):
-      Milestone 0 = start (0 workouts done to reach it, it's the starting dot)
-      Small dot A between M0 and M1 = workout index 1 in bracket 0 (i.e. overall workout 1)  
-      Small dot B between M0 and M1 = workout index 2 in bracket 0 (overall workout 2)
-      Milestone 1 = reached after 3 workouts
-      ...
-
-    State:
-      done   = this dot's workout has been logged
-      current= the very next dot to be filled (most recent logged)
-      future = not yet reached
-  */
   let html=`<div class="cycle-wrap">
-    <div class="cycle-title-row">
+    <div class="cycle-top">
       <span class="cycle-label">Training Cycle</span>
       <span class="cycle-status">${statusText}</span>
     </div>
     <div class="tube-scroll"><div class="tube-map">`;
 
   phases.forEach((ph,pi)=>{
-    const col=ph.color;
-    const done=ph.total; // number of core workouts logged in this phase
+    const col=ph.cssVar;
+    const count=ph.count; // number of core workouts in this phase
 
-    html+=`<div class="tube-phase">
-      <div class="tube-phase-label" style="color:${col}">${ph.label}</div>
-      <div class="tube-track">`;
+    // phase has been entered at all?
+    const phaseStarted=count>0;
+    // use dim colour for unstarted phases
+    const displayCol=phaseStarted?col:'var(--border)';
 
-    // 4 milestones, each preceded by 2 small dots (except the very first milestone)
-    for(let m=0;m<4;m++){
-      // before each milestone (except m=0): line + 2 small dots + line
-      if(m>0){
-        // small dot A: workout index = m*3 - 2  (1-indexed within phase)
-        // small dot B: workout index = m*3 - 1
-        const smA=m*3-2; // e.g. m=1 → workout 1 within bracket 0→1
-        const smB=m*3-1;
+    html+=`<div class="t-phase">
+      <div class="t-phase-lbl" style="color:${phaseStarted?col:'var(--muted2)'}">${ph.label}</div>
+      <div class="t-track">`;
 
-        // line before smA
-        const lineADone=done>=smA;
-        html+=`<div class="t-line" style="width:12px;background:${lineADone?col:'var(--border)'}"></div>`;
+    for(let i=0;i<STATIONS;i++){
+      const isMilestone=MILESTONE_INDICES.has(i);
+      const isLit=count>=i+1; // station i needs i+1 workouts
+      const isNext=count===i; // the very next station to be filled
 
-        // small dot A
-        const smADone=done>=smA;
-        const smACurrent=done===smA-1; // next to be filled
-        html+=`<div class="t-dot-sm" style="border-color:${col};background:${smADone?col:'transparent'};opacity:${smADone||smACurrent?1:0.25}"></div>`;
-
-        // line between smA and smB
-        const lineABDone=done>=smB;
-        html+=`<div class="t-line" style="width:10px;background:${lineABDone?col:'var(--border)'}"></div>`;
-
-        // small dot B
-        const smBDone=done>=smB;
-        const smBCurrent=done===smB-1;
-        html+=`<div class="t-dot-sm" style="border-color:${col};background:${smBDone?col:'transparent'};opacity:${smBDone||smBCurrent?1:0.25}"></div>`;
-
-        // line before milestone
-        const lineBMDone=done>=m*3;
-        html+=`<div class="t-line" style="width:12px;background:${lineBMDone?col:'var(--border)'}"></div>`;
+      // connecting line before each station except the first
+      if(i>0){
+        const lineW=isMilestone?10:8;
+        const lineBg=isLit?displayCol:'var(--border)';
+        html+=`<div class="t-ln" style="width:${lineW}px;background:${lineBg}"></div>`;
       }
 
-      // milestone dot
-      const mDone=ph.complete||done>=m*3+(m===0?0:0)&&(m===0?done>=0:done>=m*3);
-      // simplify: milestone m is "done" if done > m*3, "current" if done===m*3 and not complete
-      const mReached=ph.complete||(m===0?true:done>=m*3);
-      const mIsCurrent=!ph.complete&&done===m*3&&m===ph.milestoneIndex;
-      const innerOp=mReached?1:0;
-
-      let cls='t-dot-lg';
-      if(mIsCurrent)cls+=' current';
-
-      html+=`<div class="${cls}" style="color:${col};border-color:${col};opacity:${mReached?1:0.22}">
-        <div class="t-dot-inner" style="background:${col};opacity:${innerOp}"></div>
-      </div>`;
+      if(isMilestone){
+        // large dot
+        const bg=isLit?displayCol:(isNext&&phaseStarted?displayCol:'var(--border)');
+        const opacity=isLit?1:(isNext&&phaseStarted?0.45:0.18);
+        html+=`<div class="t-m" style="background:${bg};opacity:${opacity}"></div>`;
+      } else {
+        // small dot
+        const bg=isLit?displayCol:'var(--border)';
+        const opacity=isLit?1:(isNext&&phaseStarted?0.5:0.18);
+        html+=`<div class="t-s" style="background:${bg};opacity:${opacity}"></div>`;
+      }
     }
 
-    html+=`</div></div>`; // close tube-track, tube-phase
+    html+=`</div></div>`; // close t-track, t-phase
 
-    // inter-phase connector
+    // inter-phase bridge
     if(pi<phases.length-1){
-      const connected=ph.complete;
-      html+=`<div class="tube-gap" style="${connected?'background:var(--muted2)':''}"></div>`;
+      const bridgeLit=ph.count>=STATIONS;
+      html+=`<div class="t-bridge" style="background:${bridgeLit?'var(--muted2)':'var(--border)'}"></div>`;
     }
   });
 
@@ -477,7 +475,7 @@ function renderDashboard(){
       </div>
       <div style="font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--muted2);margin-bottom:0.65rem;display:flex;align-items:center;gap:0.5rem">
         <span>Workout #${wNum}</span>
-        <span class="recency-tag recency-latest">Most Recent</span>
+        <span class="recency-latest">Most Recent</span>
       </div>
       ${exHTML}
       ${last.notes?`<div class="card-sub" style="margin-top:0.6rem;border-top:1px solid var(--border);padding-top:0.6rem">${last.notes}</div>`:''}
@@ -485,11 +483,12 @@ function renderDashboard(){
 
     <div class="stat-grid">
       <div class="card"><div class="card-label">Workout</div><div class="card-value">#${wNum}</div><div class="card-sub">all time</div></div>
-      <div class="card"><div class="card-label">Week Vol.</div><div class="card-value" style="font-size:1.3rem">${weekVol.toLocaleString()}<span style="font-size:0.7rem;color:var(--muted2);font-family:'IBM Plex Mono',monospace"> kg</span></div><div class="card-sub">this week</div></div>
+      <div class="card"><div class="card-label">This Week</div><div class="card-value">${thisWeekSessions}</div><div class="card-sub">sessions</div></div>
+      <div class="card"><div class="card-label">Week Vol.</div><div class="card-value" style="font-size:1.3rem">${weekVol.toLocaleString()}</div><div class="card-sub">kg</div></div>
     </div>
-    <div class="card" style="margin-top:-0.1rem">
+    <div class="card" style="margin-top:-0.1rem;margin-bottom:0.75rem">
       <div class="card-label">Total Volume — All Time</div>
-      <div class="card-value">${allVol.toLocaleString()} <span style="font-size:0.9rem;color:var(--muted2);font-family:'IBM Plex Mono',monospace">kg</span></div>
+      <div class="card-value">${allVol.toLocaleString()} <span style="font-size:0.85rem;color:var(--muted2);font-family:'IBM Plex Mono',monospace">kg</span></div>
       <div class="card-sub">across ${ALL_WORKOUTS.length} session${ALL_WORKOUTS.length!==1?'s':''}</div>
     </div>
 
@@ -536,20 +535,18 @@ function renderProgress(){
   ALL_WORKOUTS.forEach(w=>w.exercises.forEach(ex=>{if(!names.includes(ex.name))names.push(ex.name);}));
   names.sort();
   let html='';
-  const total=ALL_WORKOUTS.length;
   names.forEach(name=>{
     const sessions=ALL_WORKOUTS.filter(w=>w.exercises.some(e=>e.name===name)).slice(-3).reverse();
+    const latestGlobalIdx=ALL_WORKOUTS.length-1;
     const rows=sessions.map((w,ri)=>{
       const ex=w.exercises.find(e=>e.name===name);
       const globalIdx=ALL_WORKOUTS.indexOf(w);
-      const recency=total-1-globalIdx; // 0=latest
-      let tag='';
-      if(recency===0)tag=`<span class="recency-tag recency-latest">Latest</span>`;
-      else if(recency===1)tag=`<span class="recency-tag recency-2nd">2nd</span>`;
-      else if(recency===2)tag=`<span class="recency-tag recency-3rd">3rd</span>`;
+      const isLatest=globalIdx===latestGlobalIdx||ri===0;
+      // Only show "latest" for the most recent session of this exercise
+      const tag=ri===0?`<span class="recency-latest">Latest</span>`:'';
       return`<div class="recent-session-row">
-        <div class="rs-left">
-          <div class="rs-date">${w.date.slice(5)}<br><span style="font-size:0.6rem;color:var(--muted)">W${w.week}</span></div>
+        <div class="rs-date-col">
+          <span class="rs-date">${w.date.slice(5)}</span>
           ${tag}
         </div>
         <div class="rs-sets">${chips(ex.sets)}</div>
@@ -584,44 +581,24 @@ function renderPRs(){
       <div class="pr-best">PR — ${best.weight} kg · ${best.date}</div>
       <div class="chart-wrap"><canvas id="${cid}"></canvas></div>
     </div>`;
-    toChart.push({entries,cid,name});
+    toChart.push({entries,cid});
   });
   if(!html)html=`<div class="empty-state">No 1-rep max sets yet.<br>Log a set as <strong>weightx1</strong> to track PRs here.</div>`;
   document.getElementById('prs-content').innerHTML=html;
-
   requestAnimationFrame(()=>{
     toChart.forEach(({entries,cid})=>{
       const ctx=document.getElementById(cid);if(!ctx)return;
-      // Sort by date, convert to real timestamps for x-axis
       const sorted=[...entries].sort((a,b)=>a.date.localeCompare(b.date));
       const points=sorted.map(e=>({x:new Date(e.date).getTime(),y:e.weight}));
-
       prCharts.push(new Chart(ctx,{
         type:'line',
-        data:{datasets:[{
-          data:points,
-          borderColor:'#e8ff47',
-          backgroundColor:'#e8ff4718',
-          borderWidth:2,
-          pointBackgroundColor:'#e8ff47',
-          pointRadius:5,
-          tension:0.2,
-          fill:true
-        }]},
+        data:{datasets:[{data:points,borderColor:'#e8ff47',backgroundColor:'#e8ff4718',borderWidth:2,pointBackgroundColor:'#e8ff47',pointRadius:5,tension:0.2,fill:true}]},
         options:{
           responsive:true,maintainAspectRatio:false,
           plugins:{legend:{display:false}},
           scales:{
-            x:{
-              type:'time',
-              time:{unit:'day',tooltipFormat:'yyyy-MM-dd',displayFormats:{day:'d MMM',month:'MMM yy'}},
-              grid:{color:'#1a1a1a'},
-              ticks:{color:'#555',font:{family:'IBM Plex Mono',size:9},maxTicksLimit:6}
-            },
-            y:{
-              grid:{color:'#1a1a1a'},
-              ticks:{color:'#555',font:{family:'IBM Plex Mono',size:10}}
-            }
+            x:{type:'time',time:{unit:'day',tooltipFormat:'yyyy-MM-dd',displayFormats:{day:'d MMM',month:'MMM yy'}},grid:{color:'#1a1a1a'},ticks:{color:'#555',font:{family:'IBM Plex Mono',size:9},maxTicksLimit:6}},
+            y:{grid:{color:'#1a1a1a'},ticks:{color:'#555',font:{family:'IBM Plex Mono',size:10}}}
           }
         }
       }));
@@ -632,21 +609,17 @@ function renderPRs(){
 // ── ALL WORKOUTS ──────────────────────────────────────────
 function renderAllWorkouts(){
   if(!ALL_WORKOUTS.length){document.getElementById('all-content').innerHTML=`<div class="empty-state">No workouts yet.</div>`;return;}
-  const total=ALL_WORKOUTS.length;
   const html=[...ALL_WORKOUTS].reverse().map((w,ri)=>{
     const n=workoutNum(w);
-    const recency=ri; // 0=most recent (reversed array)
-    let recencyTag='';
-    if(recency===0)recencyTag=`<span class="recency-tag recency-latest">Latest</span>`;
-    else if(recency===1)recencyTag=`<span class="recency-tag recency-2nd">2nd</span>`;
-    else if(recency===2)recencyTag=`<span class="recency-tag recency-3rd">3rd</span>`;
+    // Only tag the very latest
+    const tag=ri===0?`<span class="recency-latest">Latest</span>`:'';
     const exHTML=w.exercises.map(ex=>`<div class="exercise-row"><div class="ex-name">${ex.name}</div><div class="sets-row">${chips(ex.sets)}</div></div>`).join('');
     return`<div class="all-session-block">
       <div class="all-session-hdr">
         <div class="all-session-left">
           <div class="all-wnum">#${n}</div>
           <div class="all-session-date">${w.date}</div>
-          ${recencyTag}
+          ${tag}
         </div>
         <div class="all-phase">${w.phase} · W${w.week}</div>
       </div>
@@ -709,9 +682,5 @@ function setStatus(type,msg){const el=document.getElementById('log-status');el.c
 // ── INIT ──────────────────────────────────────────────────
 loadConfig();
 </script>
-
-<!-- Chart.js time adapter — needed for real-time x axis -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.30.0/date_fns.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 </body>
 </html>
