@@ -9,102 +9,138 @@
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
 
   :root {
-    --bg: #0a0a0a; --surface: #111111; --surface2: #1a1a1a; --border: #2a2a2a;
-    --accent: #e8ff47; --accent2: #ff6b35; --text: #f0f0f0; --muted: #666;
-    --danger: #ff4444; --good: #47ff8a;
+    --bg:#0a0a0a; --surface:#111111; --surface2:#1a1a1a; --border:#2a2a2a;
+    --accent:#e8ff47; --text:#f0f0f0; --muted:#555; --muted2:#888;
+    --danger:#ff4444; --good:#47ff8a;
+    --acc:#4a9eff;   /* accumulation blue  */
+    --str:#47ff8a;   /* strength green     */
+    --pek:#ff6b35;   /* peaking orange-red */
   }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:var(--bg); color:var(--text); font-family:'IBM Plex Sans',sans-serif; min-height:100vh; font-size:14px; }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;min-height:100vh;font-size:14px;}
 
-  /* CONFIG */
-  #config-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:2rem; gap:1.5rem; }
-  .config-title { font-family:'Bebas Neue',sans-serif; font-size:3.5rem; letter-spacing:0.15em; color:var(--accent); }
-  .config-sub { color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:0.75rem; text-align:center; }
-  .config-card { background:var(--surface); border:1px solid var(--border); border-radius:2px; padding:1.5rem; width:100%; max-width:420px; display:flex; flex-direction:column; gap:1rem; }
-  .config-card label { font-family:'IBM Plex Mono',monospace; font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; display:block; margin-bottom:0.4rem; }
-  .config-card input { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:2px; padding:0.6rem 0.8rem; color:var(--text); font-family:'IBM Plex Mono',monospace; font-size:0.8rem; outline:none; transition:border-color 0.2s; }
-  .config-card input:focus { border-color:var(--accent); }
-  .config-hint { font-size:0.7rem; color:var(--muted); line-height:1.5; }
-  .config-hint a { color:var(--accent); }
+  /* ── CONFIG ─────────────────────────────────────────── */
+  #config-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:2rem;gap:1.5rem;}
+  .config-title{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;letter-spacing:0.15em;color:var(--accent);}
+  .config-sub{color:var(--muted2);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;text-align:center;}
+  .config-card{background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:1.5rem;width:100%;max-width:420px;display:flex;flex-direction:column;gap:1rem;}
+  .config-card label{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--muted2);text-transform:uppercase;letter-spacing:0.1em;display:block;margin-bottom:0.4rem;}
+  .config-card input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:2px;padding:0.6rem 0.8rem;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:0.8rem;outline:none;transition:border-color 0.2s;}
+  .config-card input:focus{border-color:var(--accent);}
+  .config-hint{font-size:0.7rem;color:var(--muted2);line-height:1.5;}
+  .config-hint a{color:var(--accent);}
 
-  /* SHELL */
-  #app { display:none; }
-  header { background:var(--surface); border-bottom:1px solid var(--border); padding:0 1rem; display:flex; align-items:center; justify-content:space-between; height:52px; position:sticky; top:0; z-index:100; }
-  .logo { font-family:'Bebas Neue',sans-serif; font-size:1.6rem; letter-spacing:0.15em; color:var(--accent); cursor:pointer; user-select:none; -webkit-tap-highlight-color:transparent; transition:color 0.15s; }
-  .logo.flash { color:var(--text); }
-  .header-meta { font-family:'IBM Plex Mono',monospace; font-size:0.65rem; color:var(--muted); text-align:right; line-height:1.5; }
-  nav { display:flex; border-bottom:1px solid var(--border); background:var(--surface); position:sticky; top:52px; z-index:99; }
-  nav button { flex:1; background:none; border:none; border-bottom:2px solid transparent; color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; padding:0.75rem 0.5rem; cursor:pointer; transition:all 0.15s; }
-  nav button.active { color:var(--accent); border-bottom-color:var(--accent); }
-  .panel { display:none; padding:1rem; }
-  .panel.active { display:block; }
+  /* ── SHELL ──────────────────────────────────────────── */
+  #app{display:none;}
+  header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1rem;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;}
+  .logo{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:0.15em;color:var(--accent);cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;transition:color 0.15s;}
+  .logo.flash{color:var(--text);}
+  .header-meta{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted2);text-align:right;line-height:1.6;}
+  nav{display:flex;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:52px;z-index:99;}
+  nav button{flex:1;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted2);font-family:'IBM Plex Mono',monospace;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;padding:0.75rem 0.5rem;cursor:pointer;transition:all 0.15s;}
+  nav button.active{color:var(--accent);border-bottom-color:var(--accent);}
 
-  /* CARDS */
-  .card { background:var(--surface); border:1px solid var(--border); border-radius:2px; padding:1rem; margin-bottom:0.75rem; }
-  .card-label { font-family:'IBM Plex Mono',monospace; font-size:0.65rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.5rem; }
-  .card-value { font-family:'Bebas Neue',sans-serif; font-size:2rem; color:var(--accent); letter-spacing:0.05em; line-height:1; }
-  .card-sub { font-size:0.75rem; color:var(--muted); margin-top:0.3rem; }
-  .stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:0.75rem; }
-  .section-title { font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:0.15em; color:var(--muted); margin-bottom:0.75rem; }
-  .empty-state { text-align:center; color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:0.75rem; padding:3rem 1rem; line-height:1.8; }
-  .loading { text-align:center; color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:0.75rem; padding:2rem; animation:pulse 1.5s ease-in-out infinite; }
-  @keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+  /* ── PANELS ─────────────────────────────────────────── */
+  .panel{display:none;padding:1rem 1rem 4rem;}
+  .panel.active{display:block;}
+  #panel-all{display:none;padding:1rem 1rem 4rem;}
+  #panel-all.active{display:block;}
 
-  /* SESSION */
-  .session-header { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:0.75rem; }
-  .session-date { font-family:'Bebas Neue',sans-serif; font-size:1.4rem; color:var(--text); letter-spacing:0.1em; }
-  .phase-badge { font-family:'IBM Plex Mono',monospace; font-size:0.65rem; background:var(--accent); color:var(--bg); padding:0.2rem 0.5rem; text-transform:uppercase; letter-spacing:0.1em; font-weight:600; }
-  .exercise-row { border-top:1px solid var(--border); padding:0.6rem 0; }
-  .ex-name { font-weight:500; font-size:0.85rem; margin-bottom:0.3rem; }
-  .sets-row { display:flex; flex-wrap:wrap; gap:0.4rem; }
-  .set-chip { background:var(--surface2); border:1px solid var(--border); font-family:'IBM Plex Mono',monospace; font-size:0.7rem; padding:0.2rem 0.45rem; border-radius:2px; color:var(--text); }
+  /* ── COMMON ─────────────────────────────────────────── */
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:1rem;margin-bottom:0.75rem;}
+  .card-label{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.4rem;}
+  .card-value{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:0.05em;line-height:1;}
+  .card-sub{font-size:0.75rem;color:var(--muted2);margin-top:0.25rem;}
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.6rem;margin-bottom:0.75rem;}
+  .section-title{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:0.15em;color:var(--muted2);margin-bottom:0.6rem;}
+  .empty-state{text-align:center;color:var(--muted2);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;padding:3rem 1rem;line-height:1.8;}
+  .loading{text-align:center;color:var(--muted2);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;padding:2rem;animation:pulse 1.5s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:0.3}50%{opacity:1}}
 
-  /* PHILOSOPHY */
-  .philosophy-display { background:var(--surface2); border:1px solid var(--border); border-radius:2px; padding:1rem; font-size:0.85rem; line-height:1.7; color:var(--text); white-space:pre-wrap; min-height:80px; cursor:pointer; transition:border-color 0.2s; }
-  .philosophy-display:hover { border-color:var(--accent); }
-  .philosophy-display.placeholder { color:var(--muted); font-style:italic; }
-  .philosophy-edit { display:none; flex-direction:column; gap:0.5rem; }
-  .philosophy-edit textarea { width:100%; background:var(--bg); border:1px solid var(--accent); border-radius:2px; color:var(--text); font-family:'IBM Plex Sans',sans-serif; font-size:0.85rem; padding:0.75rem; line-height:1.7; resize:vertical; outline:none; min-height:140px; }
-  .philosophy-hint { font-family:'IBM Plex Mono',monospace; font-size:0.65rem; color:var(--muted); }
-  .phil-btn-row { display:flex; gap:0.5rem; }
-  .btn-sm { background:var(--accent); color:var(--bg); border:none; border-radius:2px; padding:0.4rem 0.9rem; font-family:'Bebas Neue',sans-serif; font-size:0.9rem; letter-spacing:0.1em; cursor:pointer; transition:opacity 0.15s; }
-  .btn-sm:hover { opacity:0.85; }
-  .btn-sm.ghost { background:transparent; color:var(--muted); border:1px solid var(--border); font-family:'IBM Plex Mono',monospace; font-size:0.7rem; letter-spacing:0.05em; font-size:0.75rem; }
+  .session-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.75rem;}
+  .session-date{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--text);letter-spacing:0.1em;}
+  .phase-badge{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;background:var(--accent);color:var(--bg);padding:0.2rem 0.5rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:600;}
+  .phase-badge.accessory{background:var(--muted);color:var(--bg);}
+  .phase-badge.strength{background:var(--str);color:var(--bg);}
+  .phase-badge.peaking{background:var(--pek);color:var(--bg);}
 
-  /* PROGRESS TAB */
-  .progress-ex-block { margin-bottom:0.75rem; }
-  .progress-ex-title { font-family:'Bebas Neue',sans-serif; font-size:1.05rem; letter-spacing:0.12em; color:var(--accent); border-bottom:1px solid var(--border); padding-bottom:0.35rem; margin-bottom:0.5rem; }
-  .recent-session-row { display:flex; align-items:flex-start; gap:0.75rem; padding:0.5rem 0; border-bottom:1px solid var(--border); }
-  .recent-session-row:last-child { border-bottom:none; }
-  .rs-date { font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--muted); white-space:nowrap; padding-top:0.15rem; min-width:68px; line-height:1.5; }
-  .rs-sets { display:flex; flex-wrap:wrap; gap:0.35rem; flex:1; }
+  .exercise-row{border-top:1px solid var(--border);padding:0.55rem 0;}
+  .ex-name{font-weight:500;font-size:0.85rem;margin-bottom:0.35rem;}
+  .sets-row{display:flex;flex-wrap:wrap;gap:0.35rem;}
+  .set-chip{background:var(--surface2);border:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:0.68rem;padding:0.18rem 0.4rem;border-radius:2px;color:var(--text);}
+  .set-num{color:var(--muted2);margin-right:0.2rem;}
 
-  /* PR TAB */
-  .pr-ex-block { margin-bottom:0.75rem; }
-  .pr-ex-title { font-family:'Bebas Neue',sans-serif; font-size:1.05rem; letter-spacing:0.12em; color:var(--accent); border-bottom:1px solid var(--border); padding-bottom:0.35rem; margin-bottom:0.5rem; }
-  .pr-best { font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color:var(--good); margin-bottom:0.5rem; }
-  .chart-wrap { position:relative; height:150px; }
+  /* ── CYCLE TRACKER ──────────────────────────────────── */
+  .cycle-wrap{background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:1rem 1rem 1.1rem;margin-bottom:0.75rem;overflow-x:auto;}
+  .cycle-title-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
+  .cycle-label{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted2);text-transform:uppercase;letter-spacing:0.1em;}
+  .cycle-status{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--muted2);}
 
-  /* ALL WORKOUTS */
-  #panel-all { display:none; padding:1rem; }
-  #panel-all.active { display:block; }
-  .all-session-block { margin-bottom:1.25rem; }
-  .all-session-hdr { display:flex; justify-content:space-between; align-items:center; background:var(--surface2); padding:0.5rem 0.75rem; border-radius:2px; margin-bottom:0.5rem; }
-  .all-session-date { font-family:'Bebas Neue',sans-serif; font-size:1rem; letter-spacing:0.1em; }
-  .all-phase { font-family:'IBM Plex Mono',monospace; font-size:0.6rem; color:var(--muted); text-transform:uppercase; }
+  .tube-map{display:flex;align-items:center;min-width:min-content;padding:0.5rem 0;}
+  .tube-phase{display:flex;flex-direction:column;align-items:center;}
+  .tube-phase-label{font-family:'IBM Plex Mono',monospace;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;}
+  .tube-dots{display:flex;align-items:center;}
+  .tube-line{width:18px;height:3px;flex-shrink:0;}
+  .tube-dot{width:18px;height:18px;border-radius:50%;border:2px solid;flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative;}
+  .tube-dot.done{opacity:1;}
+  .tube-dot.current{box-shadow:0 0 0 3px var(--bg),0 0 0 5px currentColor;}
+  .tube-dot.future{opacity:0.25;}
+  .tube-dot-inner{width:7px;height:7px;border-radius:50%;}
 
-  /* LOG */
-  .log-label { font-family:'IBM Plex Mono',monospace; font-size:0.65rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; display:block; margin-bottom:0.4rem; }
-  textarea.log-input { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:2px; color:var(--text); font-family:'IBM Plex Mono',monospace; font-size:0.8rem; padding:0.75rem; line-height:1.6; resize:vertical; outline:none; transition:border-color 0.2s; min-height:220px; }
-  textarea.log-input:focus { border-color:var(--accent); }
-  .format-hint { background:var(--surface2); border:1px solid var(--border); border-radius:2px; padding:0.75rem; font-family:'IBM Plex Mono',monospace; font-size:0.7rem; color:var(--muted); line-height:1.7; margin-bottom:0.75rem; }
-  .format-hint span { color:var(--accent); }
-  .btn { width:100%; background:var(--accent); color:var(--bg); border:none; border-radius:2px; padding:0.85rem; font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:0.15em; cursor:pointer; transition:opacity 0.15s; margin-top:0.75rem; }
-  .btn:hover { opacity:0.85; }
-  .btn:disabled { opacity:0.4; cursor:not-allowed; }
-  .status-msg { font-family:'IBM Plex Mono',monospace; font-size:0.75rem; text-align:center; margin-top:0.75rem; min-height:1.2em; color:var(--muted); }
-  .status-msg.ok { color:var(--good); }
-  .status-msg.err { color:var(--danger); }
+  /* inter-phase connector */
+  .tube-connector{width:28px;height:3px;background:var(--border);flex-shrink:0;margin-top:18px;/* align with dots row */ align-self:flex-start;margin-top:calc(0.6rem + 1.1rem + 9px - 1.5px);}
+
+  .cycle-complete{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:0.75rem;color:var(--accent);padding:0.5rem 0;letter-spacing:0.08em;}
+
+  /* ── PHILOSOPHY ─────────────────────────────────────── */
+  .philosophy-display{background:var(--surface2);border:1px solid var(--border);border-radius:2px;padding:1rem;font-size:0.85rem;line-height:1.7;color:var(--text);white-space:pre-wrap;min-height:72px;cursor:pointer;transition:border-color 0.2s;}
+  .philosophy-display:hover{border-color:var(--accent);}
+  .philosophy-display.placeholder{color:var(--muted2);font-style:italic;}
+  .philosophy-edit{display:none;flex-direction:column;gap:0.5rem;}
+  .philosophy-edit textarea{width:100%;background:var(--bg);border:1px solid var(--accent);border-radius:2px;color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:0.85rem;padding:0.75rem;line-height:1.7;resize:vertical;outline:none;min-height:130px;}
+  .philosophy-hint{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted2);}
+  .phil-btn-row{display:flex;gap:0.5rem;}
+  .btn-sm{background:var(--accent);color:var(--bg);border:none;border-radius:2px;padding:0.4rem 0.9rem;font-family:'Bebas Neue',sans-serif;font-size:0.9rem;letter-spacing:0.1em;cursor:pointer;transition:opacity 0.15s;}
+  .btn-sm:hover{opacity:0.85;}
+  .btn-sm.ghost{background:transparent;color:var(--muted2);border:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;letter-spacing:0.05em;}
+
+  /* ── PROGRESS TAB ───────────────────────────────────── */
+  .progress-ex-block{margin-bottom:0.75rem;}
+  .progress-ex-title{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:0.12em;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:0.35rem;margin-bottom:0.5rem;}
+  .recent-session-row{display:flex;align-items:flex-start;gap:0.75rem;padding:0.5rem 0;border-bottom:1px solid var(--border);}
+  .recent-session-row:last-child{border-bottom:none;}
+  .rs-date{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--muted2);white-space:nowrap;padding-top:0.15rem;min-width:68px;line-height:1.5;}
+  .rs-sets{display:flex;flex-wrap:wrap;gap:0.35rem;flex:1;}
+
+  /* ── PR TAB ─────────────────────────────────────────── */
+  .pr-ex-block{margin-bottom:0.75rem;}
+  .pr-ex-title{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:0.12em;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:0.35rem;margin-bottom:0.5rem;}
+  .pr-best{font-family:'IBM Plex Mono',monospace;font-size:0.78rem;color:var(--good);margin-bottom:0.5rem;}
+  .chart-wrap{position:relative;height:148px;}
+
+  /* ── ALL WORKOUTS ───────────────────────────────────── */
+  .all-session-block{margin-bottom:1.25rem;}
+  .all-session-hdr{display:flex;justify-content:space-between;align-items:center;background:var(--surface2);padding:0.5rem 0.75rem;border-radius:2px;margin-bottom:0.4rem;}
+  .all-session-left{display:flex;align-items:baseline;gap:0.6rem;}
+  .all-wnum{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted2);}
+  .all-session-date{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.1em;}
+  .all-phase{font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:var(--muted2);text-transform:uppercase;}
+
+  /* ── LOG ────────────────────────────────────────────── */
+  .log-label{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted2);text-transform:uppercase;letter-spacing:0.1em;display:block;margin-bottom:0.4rem;}
+  textarea.log-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:2px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:0.8rem;padding:0.75rem;line-height:1.6;resize:vertical;outline:none;transition:border-color 0.2s;min-height:220px;}
+  textarea.log-input:focus{border-color:var(--accent);}
+  .format-hint{background:var(--surface2);border:1px solid var(--border);border-radius:2px;padding:0.75rem;font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--muted2);line-height:1.7;margin-bottom:0.75rem;}
+  .format-hint span{color:var(--accent);}
+  .btn{width:100%;background:var(--accent);color:var(--bg);border:none;border-radius:2px;padding:0.85rem;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:0.15em;cursor:pointer;transition:opacity 0.15s;margin-top:0.75rem;}
+  .btn:hover{opacity:0.85;}
+  .btn:disabled{opacity:0.4;cursor:not-allowed;}
+  .status-msg{font-family:'IBM Plex Mono',monospace;font-size:0.75rem;text-align:center;margin-top:0.75rem;min-height:1.2em;color:var(--muted2);}
+  .status-msg.ok{color:var(--good);}
+  .status-msg.err{color:var(--danger);}
+
+  /* ── FOOTNOTE ───────────────────────────────────────── */
+  .footnote{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);padding:0.45rem 1rem;font-family:'IBM Plex Mono',monospace;font-size:0.62rem;color:var(--muted);text-align:center;z-index:200;}
 </style>
 </head>
 <body>
@@ -146,6 +182,7 @@
     <div class="section-title">Log Workout</div>
     <div class="format-hint">
       <span>date | week | phase | notes</span><br>
+      phase: <span>accumulation</span> · <span>strength</span> · <span>peaking</span> · <span>accessory</span><br>
       ExerciseName: <span>weightxreps</span>, <span>weightxreps</span>, ...<br><br>
       2026-03-24 | 1 | accumulation | Felt strong<br>
       Squat: 100x5, 100x5, 102.5x5<br>
@@ -158,7 +195,7 @@
     <div class="status-msg" id="log-status"></div>
   </div>
 
-  <!-- ALL WORKOUTS — revealed by double-tapping logo -->
+  <!-- ALL WORKOUTS — double-tap logo -->
   <div id="panel-all">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
       <div class="section-title" style="margin:0">All Workouts</div>
@@ -166,12 +203,14 @@
     </div>
     <div id="all-content"></div>
   </div>
+
+  <div class="footnote">Double-tap PERIODIZE logo to view all workouts</div>
 </div>
 
 <script>
 // ── CONFIG ────────────────────────────────────────────────
-let CFG = {};
-function saveConfig() {
+let CFG={};
+function saveConfig(){
   const u=document.getElementById('cfg-user').value.trim(),r=document.getElementById('cfg-repo').value.trim(),t=document.getElementById('cfg-token').value.trim();
   if(!u||!r||!t){alert('Please fill in all fields.');return;}
   CFG={user:u,repo:r,token:t};
@@ -181,32 +220,27 @@ function saveConfig() {
 function loadConfig(){try{const s=localStorage.getItem('periodize_cfg');if(s){CFG=JSON.parse(s);if(CFG.user&&CFG.repo&&CFG.token)enterApp();}}catch(e){}}
 function enterApp(){document.getElementById('config-screen').style.display='none';document.getElementById('app').style.display='block';loadAllWorkouts();}
 
-// ── GITHUB API ────────────────────────────────────────────
+// ── GITHUB ────────────────────────────────────────────────
 const API=()=>`https://api.github.com/repos/${CFG.user}/${CFG.repo}`;
-const HEADERS=()=>({'Authorization':`token ${CFG.token}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'});
-
-async function ghGet(path){const r=await fetch(`${API()}/contents/${path}`,{headers:HEADERS()});if(!r.ok)throw new Error(r.status);return r.json();}
-async function ghPut(path,message,content,sha){
-  const body={message,content:btoa(unescape(encodeURIComponent(content))),...(sha?{sha}:{})};
-  const r=await fetch(`${API()}/contents/${path}`,{method:'PUT',headers:HEADERS(),body:JSON.stringify(body)});
+const HDR=()=>({'Authorization':`token ${CFG.token}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'});
+function b64d(s){return decodeURIComponent(escape(atob(s.replace(/\n/g,''))));}
+async function ghGet(path){const r=await fetch(`${API()}/contents/${path}`,{headers:HDR()});if(!r.ok)throw new Error(r.status);return r.json();}
+async function ghPut(path,msg,content,sha){
+  const body={message:msg,content:btoa(unescape(encodeURIComponent(content))),...(sha?{sha}:{})};
+  const r=await fetch(`${API()}/contents/${path}`,{method:'PUT',headers:HDR(),body:JSON.stringify(body)});
   if(!r.ok)throw new Error((await r.json()).message||'API error');
   return r.json();
 }
-function b64decode(str){return decodeURIComponent(escape(atob(str.replace(/\n/g,''))));}
 
-// ── LOAD DATA ─────────────────────────────────────────────
+// ── DATA ──────────────────────────────────────────────────
 let ALL_WORKOUTS=[];
 let prCharts=[];
 
 async function loadAllWorkouts(){
   try{
-    let files;
-    try{files=await ghGet('logs/json');}catch(e){files=[];}
-    const jsonFiles=(Array.isArray(files)?files:[]).filter(f=>f.name.endsWith('.json'));
-    const workouts=await Promise.all(jsonFiles.map(async f=>{
-      const d=await ghGet(`logs/json/${f.name}`);
-      return JSON.parse(b64decode(d.content));
-    }));
+    let files=[];
+    try{const f=await ghGet('logs/json');files=Array.isArray(f)?f.filter(x=>x.name.endsWith('.json')):[];}catch(e){}
+    const workouts=await Promise.all(files.map(async f=>{const d=await ghGet(`logs/json/${f.name}`);return JSON.parse(b64d(d.content));}));
     ALL_WORKOUTS=workouts.sort((a,b)=>a.date.localeCompare(b.date));
     updateHeaderMeta();
     renderDashboard();
@@ -226,7 +260,143 @@ function updateHeaderMeta(){
 }
 
 // ── HELPERS ───────────────────────────────────────────────
-function chip(s){return `<span class="set-chip">${s.weight_kg}×${s.reps}</span>`;}
+const CORE_PHASES=['accumulation','strength','peaking'];
+function isCore(phase){return CORE_PHASES.includes((phase||'').toLowerCase());}
+
+function phaseColor(phase){
+  const p=(phase||'').toLowerCase();
+  if(p==='accumulation')return'var(--acc)';
+  if(p==='strength')return'var(--str)';
+  if(p==='peaking')return'var(--pek)';
+  return'var(--muted)';
+}
+
+function badgeClass(phase){
+  const p=(phase||'').toLowerCase();
+  if(p==='accessory')return'phase-badge accessory';
+  if(p==='strength')return'phase-badge strength';
+  if(p==='peaking')return'phase-badge peaking';
+  return'phase-badge';
+}
+
+// numbered set chips
+function chips(sets){
+  return sets.map((s,i)=>`<span class="set-chip"><span class="set-num">${i+1}.</span>${s.weight_kg}×${s.reps}</span>`).join('');
+}
+
+// workout number (1-indexed, ordered by date, all workouts)
+function workoutNumber(w){return ALL_WORKOUTS.indexOf(w)+1;}
+
+// weekly volume (core only? no — all workouts)
+function weeklyVolume(weekNum){
+  return ALL_WORKOUTS.filter(w=>w.week===weekNum).reduce((total,w)=>{
+    return total+w.exercises.reduce((et,ex)=>et+ex.sets.reduce((st,s)=>st+s.weight_kg*s.reps,0),0);
+  },0);
+}
+
+// ── CYCLE TRACKER ─────────────────────────────────────────
+/*
+  Structure: 3 phases × 4 microphases = 12 dots
+  Each dot advances after 3 core workouts in that phase-segment.
+  Segments within accumulation: acc dot 1 = workouts 1-3, dot 2 = 4-6, etc.
+  We count core workouts per phase across all time, then derive dot position.
+*/
+function computeCycle(){
+  // count core workouts per phase
+  const counts={accumulation:0,strength:0,peaking:0};
+  ALL_WORKOUTS.forEach(w=>{
+    const p=(w.phase||'').toLowerCase();
+    if(counts[p]!==undefined)counts[p]++;
+  });
+
+  // each phase has 4 dots, each dot = 3 workouts → 12 total per phase
+  // dot index within phase = floor(count/3), capped at 3
+  // fill level within dot = count%3
+  const phases=[
+    {key:'accumulation',label:'Accumulation',color:'var(--acc)'},
+    {key:'strength',     label:'Strength',    color:'var(--str)'},
+    {key:'peaking',      label:'Peaking',     color:'var(--pek)'},
+  ];
+
+  const result=phases.map(ph=>{
+    const total=counts[ph.key];
+    const dotIndex=Math.min(Math.floor(total/3),4); // 0-4 (4=phase complete)
+    const fill=total%3; // 0,1,2 within current dot
+    return {...ph,total,dotIndex,fill,complete:dotIndex>=4};
+  });
+
+  const allComplete=result.every(r=>r.complete);
+  return{phases:result,allComplete};
+}
+
+function renderCycle(){
+  const{phases,allComplete}=computeCycle();
+  if(allComplete){
+    return`<div class="cycle-wrap">
+      <div class="cycle-title-row">
+        <span class="cycle-label">Training Cycle</span>
+      </div>
+      <div class="cycle-complete">🏁 Cycle complete — deload and reset</div>
+    </div>`;
+  }
+
+  // find current active phase/dot for status text
+  let statusText='';
+  for(const ph of phases){
+    if(!ph.complete){
+      const remaining=3-ph.fill;
+      const dotNum=ph.dotIndex+1;
+      statusText=`${ph.label} ${dotNum}/4 · ${remaining} workout${remaining!==1?'s':''} to next`;
+      break;
+    }
+  }
+
+  let html=`<div class="cycle-wrap">
+    <div class="cycle-title-row">
+      <span class="cycle-label">Training Cycle</span>
+      <span class="cycle-status">${statusText}</span>
+    </div>
+    <div class="tube-map">`;
+
+  phases.forEach((ph,pi)=>{
+    html+=`<div class="tube-phase">
+      <div class="tube-phase-label" style="color:${ph.color}">${ph.label}</div>
+      <div class="tube-dots">`;
+
+    for(let d=0;d<4;d++){
+      // connector line before each dot except first of first phase
+      if(d>0){
+        html+=`<div class="tube-line" style="background:${ph.color};opacity:${d<ph.dotIndex||ph.complete?1:0.2}"></div>`;
+      }
+
+      let cls='tube-dot';
+      let innerOpacity=0;
+      if(ph.complete||d<ph.dotIndex){
+        cls+=' done'; innerOpacity=1;
+      } else if(d===ph.dotIndex){
+        cls+=' current'; innerOpacity=ph.fill/3;
+      } else {
+        cls+=' future';
+      }
+
+      // partially filled dot: show fill as inner circle opacity
+      html+=`<div class="${cls}" style="color:${ph.color};border-color:${ph.color}">
+        <div class="tube-dot-inner" style="background:${ph.color};opacity:${innerOpacity}"></div>
+      </div>`;
+    }
+
+    html+=`</div></div>`; // close tube-dots, tube-phase
+
+    // inter-phase connector
+    if(pi<phases.length-1){
+      const connected=ph.complete;
+      html+=`<div style="width:20px;height:3px;background:var(--border);flex-shrink:0;align-self:flex-end;margin-bottom:9px;${connected?'background:var(--muted2)':''}"></div>`;
+    }
+  });
+
+  html+=`</div></div>`; // close tube-map, cycle-wrap
+  return html;
+}
 
 // ── DASHBOARD ─────────────────────────────────────────────
 function renderDashboard(){
@@ -235,12 +405,14 @@ function renderDashboard(){
     return;
   }
   const last=ALL_WORKOUTS[ALL_WORKOUTS.length-1];
-  const totalSessions=ALL_WORKOUTS.length;
+  const wNum=workoutNumber(last);
+  const weekVol=Math.round(weeklyVolume(last.week));
   const thisWeekSessions=ALL_WORKOUTS.filter(w=>w.week===last.week).length;
+
   const exHTML=last.exercises.map(ex=>`
     <div class="exercise-row">
       <div class="ex-name">${ex.name}</div>
-      <div class="sets-row">${ex.sets.map(chip).join('')}</div>
+      <div class="sets-row">${chips(ex.sets)}</div>
     </div>`).join('');
 
   document.getElementById('dash-content').innerHTML=`
@@ -248,15 +420,21 @@ function renderDashboard(){
     <div class="card">
       <div class="session-header">
         <div class="session-date">${last.date}</div>
-        <div class="phase-badge">${last.phase}</div>
+        <div class="${badgeClass(last.phase)}">${last.phase}</div>
       </div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--muted2);margin-bottom:0.6rem">Workout #${wNum}</div>
       ${exHTML}
       ${last.notes?`<div class="card-sub" style="margin-top:0.6rem;border-top:1px solid var(--border);padding-top:0.6rem">${last.notes}</div>`:''}
     </div>
+
     <div class="stat-grid">
-      <div class="card"><div class="card-label">Total Sessions</div><div class="card-value">${totalSessions}</div><div class="card-sub">all time</div></div>
-      <div class="card"><div class="card-label">Week ${last.week}</div><div class="card-value">${thisWeekSessions}</div><div class="card-sub">sessions this week</div></div>
+      <div class="card"><div class="card-label">Workout</div><div class="card-value">#${wNum}</div><div class="card-sub">all time</div></div>
+      <div class="card"><div class="card-label">Week Vol.</div><div class="card-value" style="font-size:1.3rem">${weekVol.toLocaleString()}</div><div class="card-sub">kg this week</div></div>
+      <div class="card"><div class="card-label">Sessions</div><div class="card-value">${thisWeekSessions}</div><div class="card-sub">this week</div></div>
     </div>
+
+    ${renderCycle()}
+
     <div class="section-title">Training Philosophy</div>
     <div class="philosophy-display placeholder" id="phil-display" onclick="openPhilosophy()">Tap to write your training philosophy...</div>
     <div class="philosophy-edit" id="phil-edit">
@@ -272,16 +450,10 @@ function renderDashboard(){
 // ── PHILOSOPHY ────────────────────────────────────────────
 let philSHA=null;
 async function loadPhilosophy(){
-  try{
-    const d=await ghGet('philosophy.txt');
-    philSHA=d.sha;
-    const text=b64decode(d.content);
-    setPhilDisplay(text);
-  }catch(e){}
+  try{const d=await ghGet('philosophy.txt');philSHA=d.sha;setPhilDisplay(b64d(d.content));}catch(e){}
 }
 function setPhilDisplay(text){
-  const el=document.getElementById('phil-display');
-  if(!el)return;
+  const el=document.getElementById('phil-display');if(!el)return;
   if(text&&text.trim()){el.textContent=text;el.classList.remove('placeholder');}
   else{el.textContent='Tap to write your training philosophy...';el.classList.add('placeholder');}
 }
@@ -290,18 +462,11 @@ function openPhilosophy(){
   if(!d.classList.contains('placeholder'))ta.value=d.textContent;
   d.style.display='none';e.style.display='flex';ta.focus();
 }
-function cancelPhilosophy(){
-  document.getElementById('phil-display').style.display='block';
-  document.getElementById('phil-edit').style.display='none';
-}
+function cancelPhilosophy(){document.getElementById('phil-display').style.display='block';document.getElementById('phil-edit').style.display='none';}
 async function savePhilosophy(){
   const text=document.getElementById('phil-textarea').value;
-  try{
-    const r=await ghPut('philosophy.txt','update: training philosophy',text,philSHA);
-    philSHA=r.content.sha;
-    setPhilDisplay(text);
-    cancelPhilosophy();
-  }catch(e){alert('Could not save: '+e.message);}
+  try{const r=await ghPut('philosophy.txt','update: training philosophy',text,philSHA);philSHA=r.content.sha;setPhilDisplay(text);cancelPhilosophy();}
+  catch(e){alert('Could not save: '+e.message);}
 }
 
 // ── PROGRESS ──────────────────────────────────────────────
@@ -310,15 +475,14 @@ function renderProgress(){
   const names=[];
   ALL_WORKOUTS.forEach(w=>w.exercises.forEach(ex=>{if(!names.includes(ex.name))names.push(ex.name);}));
   names.sort();
-
   let html='';
   names.forEach(name=>{
     const sessions=ALL_WORKOUTS.filter(w=>w.exercises.some(e=>e.name===name)).slice(-3).reverse();
     const rows=sessions.map(w=>{
       const ex=w.exercises.find(e=>e.name===name);
-      return `<div class="recent-session-row">
-        <div class="rs-date">${w.date.slice(5)}<br><span style="font-size:0.6rem;color:#444">W${w.week}</span></div>
-        <div class="rs-sets">${ex.sets.map(chip).join('')}</div>
+      return`<div class="recent-session-row">
+        <div class="rs-date">${w.date.slice(5)}<br><span style="font-size:0.6rem;color:#3a3a3a">W${w.week}</span></div>
+        <div class="rs-sets">${chips(ex.sets)}</div>
       </div>`;
     }).join('');
     html+=`<div class="progress-ex-block card"><div class="progress-ex-title">${name}</div>${rows}</div>`;
@@ -328,16 +492,12 @@ function renderProgress(){
 
 // ── PRs ───────────────────────────────────────────────────
 function renderPRs(){
-  prCharts.forEach(c=>c.destroy()); prCharts=[];
+  prCharts.forEach(c=>c.destroy());prCharts=[];
   if(!ALL_WORKOUTS.length){document.getElementById('prs-content').innerHTML=`<div class="empty-state">No workouts yet.</div>`;return;}
-
   const names=[];
   ALL_WORKOUTS.forEach(w=>w.exercises.forEach(ex=>{if(!names.includes(ex.name))names.push(ex.name);}));
   names.sort();
-
-  let html='';
-  const toChart=[];
-
+  let html='';const toChart=[];
   names.forEach(name=>{
     const entries=[];
     ALL_WORKOUTS.forEach(w=>{
@@ -351,21 +511,18 @@ function renderPRs(){
     const cid=`prc-${name.replace(/[^a-z0-9]/gi,'-')}`;
     html+=`<div class="pr-ex-block card">
       <div class="pr-ex-title">${name}</div>
-      <div class="pr-best">PR — ${best.weight} kg &nbsp;·&nbsp; ${best.date}</div>
+      <div class="pr-best">PR — ${best.weight} kg · ${best.date}</div>
       <div class="chart-wrap"><canvas id="${cid}"></canvas></div>
     </div>`;
     toChart.push({entries,cid});
   });
-
-  if(!html)html=`<div class="empty-state">No 1-rep max sets recorded yet.<br>Log a set as <strong>weightx1</strong> to track PRs here.</div>`;
+  if(!html)html=`<div class="empty-state">No 1-rep max sets yet.<br>Log a set as <strong>weightx1</strong> to track PRs here.</div>`;
   document.getElementById('prs-content').innerHTML=html;
-
   requestAnimationFrame(()=>{
     toChart.forEach(({entries,cid})=>{
-      const ctx=document.getElementById(cid); if(!ctx)return;
+      const ctx=document.getElementById(cid);if(!ctx)return;
       const sorted=[...entries].sort((a,b)=>a.date.localeCompare(b.date));
-      const c=new Chart(ctx,{type:'line',data:{labels:sorted.map(e=>e.date.slice(5)),datasets:[{data:sorted.map(e=>e.weight),borderColor:'#e8ff47',backgroundColor:'#e8ff4718',borderWidth:2,pointBackgroundColor:'#e8ff47',pointRadius:5,tension:0.2,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'#1a1a1a'},ticks:{color:'#666',font:{family:'IBM Plex Mono',size:9}}},y:{grid:{color:'#1a1a1a'},ticks:{color:'#666',font:{family:'IBM Plex Mono',size:10}}}}}});
-      prCharts.push(c);
+      prCharts.push(new Chart(ctx,{type:'line',data:{labels:sorted.map(e=>e.date.slice(5)),datasets:[{data:sorted.map(e=>e.weight),borderColor:'#e8ff47',backgroundColor:'#e8ff4718',borderWidth:2,pointBackgroundColor:'#e8ff47',pointRadius:5,tension:0.2,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'#1a1a1a'},ticks:{color:'#555',font:{family:'IBM Plex Mono',size:9}}},y:{grid:{color:'#1a1a1a'},ticks:{color:'#555',font:{family:'IBM Plex Mono',size:10}}}}}}));
     });
   });
 }
@@ -374,10 +531,20 @@ function renderPRs(){
 function renderAllWorkouts(){
   if(!ALL_WORKOUTS.length){document.getElementById('all-content').innerHTML=`<div class="empty-state">No workouts yet.</div>`;return;}
   const html=[...ALL_WORKOUTS].reverse().map(w=>{
-    const exHTML=w.exercises.map(ex=>`<div class="exercise-row"><div class="ex-name">${ex.name}</div><div class="sets-row">${ex.sets.map(chip).join('')}</div></div>`).join('');
-    return `<div class="all-session-block">
-      <div class="all-session-hdr"><div class="all-session-date">${w.date}</div><div class="all-phase">${w.phase} · W${w.week}</div></div>
-      <div class="card" style="padding:0.5rem 1rem">${exHTML}${w.notes?`<div class="card-sub" style="margin-top:0.5rem;padding-top:0.5rem;border-top:1px solid var(--border)">${w.notes}</div>`:''}</div>
+    const n=workoutNumber(w);
+    const exHTML=w.exercises.map(ex=>`<div class="exercise-row"><div class="ex-name">${ex.name}</div><div class="sets-row">${chips(ex.sets)}</div></div>`).join('');
+    return`<div class="all-session-block">
+      <div class="all-session-hdr">
+        <div class="all-session-left">
+          <div class="all-wnum">#${n}</div>
+          <div class="all-session-date">${w.date}</div>
+        </div>
+        <div class="all-phase">${w.phase} · W${w.week}</div>
+      </div>
+      <div class="card" style="padding:0.5rem 1rem">
+        ${exHTML}
+        ${w.notes?`<div class="card-sub" style="margin-top:0.5rem;padding-top:0.5rem;border-top:1px solid var(--border)">${w.notes}</div>`:''}
+      </div>
     </div>`;
   }).join('');
   document.getElementById('all-content').innerHTML=html;
@@ -386,8 +553,7 @@ function renderAllWorkouts(){
 // ── LOGO DOUBLE-TAP ───────────────────────────────────────
 let tapCount=0,tapTimer=null;
 function handleLogoTap(){
-  tapCount++;
-  clearTimeout(tapTimer);
+  tapCount++;clearTimeout(tapTimer);
   if(tapCount>=2){tapCount=0;showAll();return;}
   tapTimer=setTimeout(()=>{tapCount=0;},400);
 }
@@ -395,8 +561,7 @@ function showAll(){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-all').classList.add('active');
   document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-  const logo=document.getElementById('logo');
-  logo.classList.add('flash');setTimeout(()=>logo.classList.remove('flash'),200);
+  const logo=document.getElementById('logo');logo.classList.add('flash');setTimeout(()=>logo.classList.remove('flash'),200);
 }
 function closeAll(){
   document.getElementById('panel-all').classList.remove('active');
@@ -415,18 +580,14 @@ function switchTab(name,btn){
 
 // ── LOG ───────────────────────────────────────────────────
 async function submitLog(){
-  const text=document.getElementById('log-input').value.trim();
-  if(!text)return;
+  const text=document.getElementById('log-input').value.trim();if(!text)return;
   const dm=text.match(/^(\d{4}-\d{2}-\d{2})/);
   if(!dm){setStatus('err','First line must start with YYYY-MM-DD');return;}
   const filename=`logs/raw/${dm[1]}.txt`;
-  const btn=document.getElementById('submit-btn');
-  btn.disabled=true; setStatus('','Committing to GitHub...');
+  const btn=document.getElementById('submit-btn');btn.disabled=true;setStatus('','Committing to GitHub...');
   try{
     let sha;
-    try{const e=await ghGet(filename.replace('logs/raw/','logs/raw/'));sha=e.sha;}catch(e){}
-    // re-fetch properly
-    try{const e2=await fetch(`${API()}/contents/${filename}`,{headers:HEADERS()});if(e2.ok)sha=(await e2.json()).sha;}catch(e){}
+    try{const e=await fetch(`${API()}/contents/${filename}`,{headers:HDR()});if(e.ok)sha=(await e.json()).sha;}catch(e){}
     await ghPut(filename,`log: workout ${dm[1]}`,text,sha);
     setStatus('ok','✓ Committed! Dashboard updates in ~35s.');
     document.getElementById('log-input').value='';
