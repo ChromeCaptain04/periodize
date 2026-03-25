@@ -9,893 +9,434 @@
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
 
   :root {
-    --bg: #0a0a0a;
-    --surface: #111111;
-    --surface2: #1a1a1a;
-    --border: #2a2a2a;
-    --accent: #e8ff47;
-    --accent2: #ff6b35;
-    --text: #f0f0f0;
-    --muted: #666;
-    --danger: #ff4444;
-    --good: #47ff8a;
+    --bg: #0a0a0a; --surface: #111111; --surface2: #1a1a1a; --border: #2a2a2a;
+    --accent: #e8ff47; --accent2: #ff6b35; --text: #f0f0f0; --muted: #666;
+    --danger: #ff4444; --good: #47ff8a;
   }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'IBM Plex Sans',sans-serif; min-height:100vh; font-size:14px; }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  /* CONFIG */
+  #config-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:2rem; gap:1.5rem; }
+  .config-title { font-family:'Bebas Neue',sans-serif; font-size:3.5rem; letter-spacing:0.15em; color:var(--accent); }
+  .config-sub { color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:0.75rem; text-align:center; }
+  .config-card { background:var(--surface); border:1px solid var(--border); border-radius:2px; padding:1.5rem; width:100%; max-width:420px; display:flex; flex-direction:column; gap:1rem; }
+  .config-card label { font-family:'IBM Plex Mono',monospace; font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; display:block; margin-bottom:0.4rem; }
+  .config-card input { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:2px; padding:0.6rem 0.8rem; color:var(--text); font-family:'IBM Plex Mono',monospace; font-size:0.8rem; outline:none; transition:border-color 0.2s; }
+  .config-card input:focus { border-color:var(--accent); }
+  .config-hint { font-size:0.7rem; color:var(--muted); line-height:1.5; }
+  .config-hint a { color:var(--accent); }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'IBM Plex Sans', sans-serif;
-    min-height: 100vh;
-    font-size: 14px;
-  }
+  /* SHELL */
+  #app { display:none; }
+  header { background:var(--surface); border-bottom:1px solid var(--border); padding:0 1rem; display:flex; align-items:center; justify-content:space-between; height:52px; position:sticky; top:0; z-index:100; }
+  .logo { font-family:'Bebas Neue',sans-serif; font-size:1.6rem; letter-spacing:0.15em; color:var(--accent); cursor:pointer; user-select:none; -webkit-tap-highlight-color:transparent; transition:color 0.15s; }
+  .logo.flash { color:var(--text); }
+  .header-meta { font-family:'IBM Plex Mono',monospace; font-size:0.65rem; color:var(--muted); text-align:right; line-height:1.5; }
+  nav { display:flex; border-bottom:1px solid var(--border); background:var(--surface); position:sticky; top:52px; z-index:99; }
+  nav button { flex:1; background:none; border:none; border-bottom:2px solid transparent; color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; padding:0.75rem 0.5rem; cursor:pointer; transition:all 0.15s; }
+  nav button.active { color:var(--accent); border-bottom-color:var(--accent); }
+  .panel { display:none; padding:1rem; }
+  .panel.active { display:block; }
 
-  /* ── CONFIG SCREEN ── */
-  #config-screen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 2rem;
-    gap: 1.5rem;
-  }
-
-  .config-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 3.5rem;
-    letter-spacing: 0.15em;
-    color: var(--accent);
-    line-height: 1;
-  }
-
-  .config-sub {
-    color: var(--muted);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.75rem;
-    text-align: center;
-  }
-
-  .config-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    padding: 1.5rem;
-    width: 100%;
-    max-width: 420px;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .config-card label {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    display: block;
-    margin-bottom: 0.4rem;
-  }
-
-  .config-card input {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    padding: 0.6rem 0.8rem;
-    color: var(--text);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.8rem;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .config-card input:focus { border-color: var(--accent); }
-
-  .config-hint {
-    font-size: 0.7rem;
-    color: var(--muted);
-    line-height: 1.5;
-  }
-  .config-hint a { color: var(--accent); }
-
-  /* ── HEADER ── */
-  #app { display: none; }
-
-  header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 52px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.6rem;
-    letter-spacing: 0.15em;
-    color: var(--accent);
-  }
-
-  .header-meta {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--muted);
-    text-align: right;
-  }
-
-  /* ── NAV ── */
-  nav {
-    display: flex;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface);
-    position: sticky;
-    top: 52px;
-    z-index: 99;
-  }
-
-  nav button {
-    flex: 1;
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    color: var(--muted);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    padding: 0.75rem 0.5rem;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  nav button.active {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
-  }
-
-  /* ── PANELS ── */
-  .panel { display: none; padding: 1rem; }
-  .panel.active { display: block; }
-
-  /* ── CARDS ── */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    padding: 1rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .card-label {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 0.5rem;
-  }
-
-  .card-value {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2rem;
-    color: var(--accent);
-    letter-spacing: 0.05em;
-    line-height: 1;
-  }
-
-  .card-sub {
-    font-size: 0.75rem;
-    color: var(--muted);
-    margin-top: 0.3rem;
-  }
-
-  /* ── STAT GRID ── */
-  .stat-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-    margin-bottom: 0.75rem;
-  }
-
-  /* ── LAST SESSION ── */
-  .session-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 0.75rem;
-  }
-
-  .session-date {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.4rem;
-    color: var(--text);
-    letter-spacing: 0.1em;
-  }
-
-  .phase-badge {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.65rem;
-    background: var(--accent);
-    color: var(--bg);
-    padding: 0.2rem 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-weight: 600;
-  }
-
-  .exercise-row {
-    border-top: 1px solid var(--border);
-    padding: 0.6rem 0;
-  }
-
-  .ex-name {
-    font-weight: 500;
-    font-size: 0.85rem;
-    margin-bottom: 0.3rem;
-  }
-
-  .sets-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-  }
-
-  .set-chip {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.7rem;
-    padding: 0.2rem 0.45rem;
-    border-radius: 2px;
-    color: var(--text);
-  }
-
-  .set-chip.high-rpe { border-color: var(--accent2); color: var(--accent2); }
-
-  /* ── PR TABLE ── */
-  .pr-table { width: 100%; border-collapse: collapse; }
-  .pr-table th {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    text-align: left;
-    padding: 0.4rem 0.5rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .pr-table td {
-    padding: 0.55rem 0.5rem;
-    font-size: 0.8rem;
-    border-bottom: 1px solid var(--border);
-    font-family: 'IBM Plex Mono', monospace;
-  }
-  .pr-table tr:last-child td { border-bottom: none; }
-  .pr-val { color: var(--accent); font-weight: 600; }
-
-  /* ── CHARTS ── */
-  .chart-wrap {
-    position: relative;
-    height: 200px;
-    margin-top: 0.5rem;
-  }
-
-  .chart-title {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 0.5rem;
-  }
-
-  .exercise-select {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.75rem;
-    padding: 0.5rem;
-    margin-bottom: 0.75rem;
-    outline: none;
-    border-radius: 2px;
-    appearance: none;
-  }
-
-  /* ── LOG FORM ── */
-  .log-label {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    display: block;
-    margin-bottom: 0.4rem;
-  }
-
-  textarea {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    color: var(--text);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.8rem;
-    padding: 0.75rem;
-    line-height: 1.6;
-    resize: vertical;
-    outline: none;
-    transition: border-color 0.2s;
-    min-height: 220px;
-  }
-
-  textarea:focus { border-color: var(--accent); }
-
-  .format-hint {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    padding: 0.75rem;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-    line-height: 1.7;
-    margin-bottom: 0.75rem;
-  }
-
-  .format-hint span { color: var(--accent); }
-
-  .btn {
-    width: 100%;
-    background: var(--accent);
-    color: var(--bg);
-    border: none;
-    border-radius: 2px;
-    padding: 0.85rem;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.1rem;
-    letter-spacing: 0.15em;
-    cursor: pointer;
-    transition: opacity 0.15s;
-    margin-top: 0.75rem;
-  }
-
-  .btn:hover { opacity: 0.85; }
-  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .btn.danger { background: var(--danger); }
-
-  .status-msg {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.75rem;
-    text-align: center;
-    margin-top: 0.75rem;
-    min-height: 1.2em;
-    color: var(--muted);
-  }
-
-  .status-msg.ok { color: var(--good); }
-  .status-msg.err { color: var(--danger); }
-
-  /* ── SECTION TITLE ── */
-  .section-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.1rem;
-    letter-spacing: 0.15em;
-    color: var(--muted);
-    margin-bottom: 0.75rem;
-  }
-
-  .empty-state {
-    text-align: center;
-    color: var(--muted);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.75rem;
-    padding: 3rem 1rem;
-    line-height: 1.8;
-  }
-
-  .loading {
-    text-align: center;
-    color: var(--muted);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.75rem;
-    padding: 2rem;
-    animation: pulse 1.5s ease-in-out infinite;
-  }
-
+  /* CARDS */
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:2px; padding:1rem; margin-bottom:0.75rem; }
+  .card-label { font-family:'IBM Plex Mono',monospace; font-size:0.65rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.5rem; }
+  .card-value { font-family:'Bebas Neue',sans-serif; font-size:2rem; color:var(--accent); letter-spacing:0.05em; line-height:1; }
+  .card-sub { font-size:0.75rem; color:var(--muted); margin-top:0.3rem; }
+  .stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:0.75rem; }
+  .section-title { font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:0.15em; color:var(--muted); margin-bottom:0.75rem; }
+  .empty-state { text-align:center; color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:0.75rem; padding:3rem 1rem; line-height:1.8; }
+  .loading { text-align:center; color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:0.75rem; padding:2rem; animation:pulse 1.5s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+
+  /* SESSION */
+  .session-header { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:0.75rem; }
+  .session-date { font-family:'Bebas Neue',sans-serif; font-size:1.4rem; color:var(--text); letter-spacing:0.1em; }
+  .phase-badge { font-family:'IBM Plex Mono',monospace; font-size:0.65rem; background:var(--accent); color:var(--bg); padding:0.2rem 0.5rem; text-transform:uppercase; letter-spacing:0.1em; font-weight:600; }
+  .exercise-row { border-top:1px solid var(--border); padding:0.6rem 0; }
+  .ex-name { font-weight:500; font-size:0.85rem; margin-bottom:0.3rem; }
+  .sets-row { display:flex; flex-wrap:wrap; gap:0.4rem; }
+  .set-chip { background:var(--surface2); border:1px solid var(--border); font-family:'IBM Plex Mono',monospace; font-size:0.7rem; padding:0.2rem 0.45rem; border-radius:2px; color:var(--text); }
+
+  /* PHILOSOPHY */
+  .philosophy-display { background:var(--surface2); border:1px solid var(--border); border-radius:2px; padding:1rem; font-size:0.85rem; line-height:1.7; color:var(--text); white-space:pre-wrap; min-height:80px; cursor:pointer; transition:border-color 0.2s; }
+  .philosophy-display:hover { border-color:var(--accent); }
+  .philosophy-display.placeholder { color:var(--muted); font-style:italic; }
+  .philosophy-edit { display:none; flex-direction:column; gap:0.5rem; }
+  .philosophy-edit textarea { width:100%; background:var(--bg); border:1px solid var(--accent); border-radius:2px; color:var(--text); font-family:'IBM Plex Sans',sans-serif; font-size:0.85rem; padding:0.75rem; line-height:1.7; resize:vertical; outline:none; min-height:140px; }
+  .philosophy-hint { font-family:'IBM Plex Mono',monospace; font-size:0.65rem; color:var(--muted); }
+  .phil-btn-row { display:flex; gap:0.5rem; }
+  .btn-sm { background:var(--accent); color:var(--bg); border:none; border-radius:2px; padding:0.4rem 0.9rem; font-family:'Bebas Neue',sans-serif; font-size:0.9rem; letter-spacing:0.1em; cursor:pointer; transition:opacity 0.15s; }
+  .btn-sm:hover { opacity:0.85; }
+  .btn-sm.ghost { background:transparent; color:var(--muted); border:1px solid var(--border); font-family:'IBM Plex Mono',monospace; font-size:0.7rem; letter-spacing:0.05em; font-size:0.75rem; }
+
+  /* PROGRESS TAB */
+  .progress-ex-block { margin-bottom:0.75rem; }
+  .progress-ex-title { font-family:'Bebas Neue',sans-serif; font-size:1.05rem; letter-spacing:0.12em; color:var(--accent); border-bottom:1px solid var(--border); padding-bottom:0.35rem; margin-bottom:0.5rem; }
+  .recent-session-row { display:flex; align-items:flex-start; gap:0.75rem; padding:0.5rem 0; border-bottom:1px solid var(--border); }
+  .recent-session-row:last-child { border-bottom:none; }
+  .rs-date { font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--muted); white-space:nowrap; padding-top:0.15rem; min-width:68px; line-height:1.5; }
+  .rs-sets { display:flex; flex-wrap:wrap; gap:0.35rem; flex:1; }
+
+  /* PR TAB */
+  .pr-ex-block { margin-bottom:0.75rem; }
+  .pr-ex-title { font-family:'Bebas Neue',sans-serif; font-size:1.05rem; letter-spacing:0.12em; color:var(--accent); border-bottom:1px solid var(--border); padding-bottom:0.35rem; margin-bottom:0.5rem; }
+  .pr-best { font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color:var(--good); margin-bottom:0.5rem; }
+  .chart-wrap { position:relative; height:150px; }
+
+  /* ALL WORKOUTS */
+  #panel-all { display:none; padding:1rem; }
+  #panel-all.active { display:block; }
+  .all-session-block { margin-bottom:1.25rem; }
+  .all-session-hdr { display:flex; justify-content:space-between; align-items:center; background:var(--surface2); padding:0.5rem 0.75rem; border-radius:2px; margin-bottom:0.5rem; }
+  .all-session-date { font-family:'Bebas Neue',sans-serif; font-size:1rem; letter-spacing:0.1em; }
+  .all-phase { font-family:'IBM Plex Mono',monospace; font-size:0.6rem; color:var(--muted); text-transform:uppercase; }
+
+  /* LOG */
+  .log-label { font-family:'IBM Plex Mono',monospace; font-size:0.65rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; display:block; margin-bottom:0.4rem; }
+  textarea.log-input { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:2px; color:var(--text); font-family:'IBM Plex Mono',monospace; font-size:0.8rem; padding:0.75rem; line-height:1.6; resize:vertical; outline:none; transition:border-color 0.2s; min-height:220px; }
+  textarea.log-input:focus { border-color:var(--accent); }
+  .format-hint { background:var(--surface2); border:1px solid var(--border); border-radius:2px; padding:0.75rem; font-family:'IBM Plex Mono',monospace; font-size:0.7rem; color:var(--muted); line-height:1.7; margin-bottom:0.75rem; }
+  .format-hint span { color:var(--accent); }
+  .btn { width:100%; background:var(--accent); color:var(--bg); border:none; border-radius:2px; padding:0.85rem; font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:0.15em; cursor:pointer; transition:opacity 0.15s; margin-top:0.75rem; }
+  .btn:hover { opacity:0.85; }
+  .btn:disabled { opacity:0.4; cursor:not-allowed; }
+  .status-msg { font-family:'IBM Plex Mono',monospace; font-size:0.75rem; text-align:center; margin-top:0.75rem; min-height:1.2em; color:var(--muted); }
+  .status-msg.ok { color:var(--good); }
+  .status-msg.err { color:var(--danger); }
 </style>
 </head>
 <body>
 
-<!-- ── CONFIG SCREEN ── -->
+<!-- CONFIG -->
 <div id="config-screen">
   <div class="config-title">PERIODIZE</div>
   <div class="config-sub">workout tracking / periodization</div>
   <div class="config-card">
-    <div>
-      <label>GitHub Username</label>
-      <input id="cfg-user" type="text" placeholder="your-username" autocomplete="off" autocorrect="off" autocapitalize="off">
-    </div>
-    <div>
-      <label>Repository Name</label>
-      <input id="cfg-repo" type="text" placeholder="periodize" autocomplete="off" autocorrect="off" autocapitalize="off">
-    </div>
+    <div><label>GitHub Username</label><input id="cfg-user" type="text" placeholder="your-username" autocomplete="off" autocorrect="off" autocapitalize="off"></div>
+    <div><label>Repository Name</label><input id="cfg-repo" type="text" placeholder="periodize" autocomplete="off" autocorrect="off" autocapitalize="off"></div>
     <div>
       <label>Personal Access Token</label>
       <input id="cfg-token" type="password" placeholder="ghp_xxxxxxxxxxxx">
-      <div class="config-hint" style="margin-top:0.5rem">
-        Stored only in your browser. Generate at
-        <a href="https://github.com/settings/tokens/new" target="_blank">GitHub → Settings → Tokens</a>
-        with <strong>repo</strong> scope.
-      </div>
+      <div class="config-hint" style="margin-top:0.5rem">Stored only in your browser. Generate at <a href="https://github.com/settings/tokens/new" target="_blank">GitHub → Settings → Tokens</a> with <strong>repo</strong> scope.</div>
     </div>
     <button class="btn" onclick="saveConfig()">Save & Enter</button>
   </div>
 </div>
 
-<!-- ── MAIN APP ── -->
+<!-- APP -->
 <div id="app">
   <header>
-    <div class="logo">PERIODIZE</div>
+    <div class="logo" id="logo" onclick="handleLogoTap()">PERIODIZE</div>
     <div class="header-meta" id="header-meta"></div>
   </header>
   <nav>
-    <button class="active" onclick="switchTab('dashboard', this)">Dashboard</button>
-    <button onclick="switchTab('progress', this)">Progress</button>
-    <button onclick="switchTab('prs', this)">PRs</button>
-    <button onclick="switchTab('log', this)">+ Log</button>
+    <button class="active" onclick="switchTab('dashboard',this)">Dashboard</button>
+    <button onclick="switchTab('progress',this)">Progress</button>
+    <button onclick="switchTab('prs',this)">PRs</button>
+    <button onclick="switchTab('log',this)">+ Log</button>
   </nav>
 
-  <!-- DASHBOARD -->
-  <div id="panel-dashboard" class="panel active">
-    <div id="dash-content"><div class="loading">loading workouts...</div></div>
-  </div>
+  <div id="panel-dashboard" class="panel active"><div id="dash-content"><div class="loading">loading workouts...</div></div></div>
+  <div id="panel-progress" class="panel"><div id="progress-content"><div class="loading">loading...</div></div></div>
+  <div id="panel-prs" class="panel"><div id="prs-content"><div class="loading">loading...</div></div></div>
 
-  <!-- PROGRESS CHARTS -->
-  <div id="panel-progress" class="panel">
-    <select class="exercise-select" id="ex-select" onchange="renderProgressCharts()"></select>
-    <div id="progress-content"></div>
-  </div>
-
-  <!-- PRs -->
-  <div id="panel-prs" class="panel">
-    <div class="section-title">Personal Records</div>
-    <div class="card">
-      <table class="pr-table" id="pr-table">
-        <thead><tr><th>Exercise</th><th>Est. 1RM</th><th>Best Set</th><th>Date</th></tr></thead>
-        <tbody id="pr-body"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- LOG -->
   <div id="panel-log" class="panel">
     <div class="section-title">Log Workout</div>
     <div class="format-hint">
-      <span>date | week | phase | session_rpe | notes</span><br>
-      ExerciseName: <span>weightxreps@rpe</span>, ...<br><br>
-      Example:<br>
-      2026-03-24 | 1 | accumulation | 7 | Felt strong<br>
-      Squat: 100x5@8, 102.5x5@8.5<br>
-      Bench: 80x5@7, 82.5x5@8<br>
-      RDL: 70x8@7
+      <span>date | week | phase | notes</span><br>
+      ExerciseName: <span>weightxreps</span>, <span>weightxreps</span>, ...<br><br>
+      2026-03-24 | 1 | accumulation | Felt strong<br>
+      Squat: 100x5, 100x5, 102.5x5<br>
+      Bench: 80x5, 82.5x5<br>
+      RDL: 70x8, 70x8
     </div>
     <label class="log-label">Shorthand Entry</label>
-    <textarea id="log-input" placeholder="Paste or type your workout here..."></textarea>
+    <textarea class="log-input" id="log-input" placeholder="Type your workout here..."></textarea>
     <button class="btn" id="submit-btn" onclick="submitLog()">Commit to GitHub</button>
     <div class="status-msg" id="log-status"></div>
+  </div>
+
+  <!-- ALL WORKOUTS — revealed by double-tapping logo -->
+  <div id="panel-all">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+      <div class="section-title" style="margin:0">All Workouts</div>
+      <button class="btn-sm ghost" onclick="closeAll()">← Back</button>
+    </div>
+    <div id="all-content"></div>
   </div>
 </div>
 
 <script>
-// ── CONFIG ──────────────────────────────────────────────
+// ── CONFIG ────────────────────────────────────────────────
 let CFG = {};
-
 function saveConfig() {
-  const u = document.getElementById('cfg-user').value.trim();
-  const r = document.getElementById('cfg-repo').value.trim();
-  const t = document.getElementById('cfg-token').value.trim();
-  if (!u || !r || !t) { alert('Please fill in all fields.'); return; }
-  CFG = { user: u, repo: r, token: t };
-  localStorage.setItem('periodize_cfg', JSON.stringify({ user: u, repo: r, token: t }));
+  const u=document.getElementById('cfg-user').value.trim(),r=document.getElementById('cfg-repo').value.trim(),t=document.getElementById('cfg-token').value.trim();
+  if(!u||!r||!t){alert('Please fill in all fields.');return;}
+  CFG={user:u,repo:r,token:t};
+  localStorage.setItem('periodize_cfg',JSON.stringify(CFG));
   enterApp();
 }
+function loadConfig(){try{const s=localStorage.getItem('periodize_cfg');if(s){CFG=JSON.parse(s);if(CFG.user&&CFG.repo&&CFG.token)enterApp();}}catch(e){}}
+function enterApp(){document.getElementById('config-screen').style.display='none';document.getElementById('app').style.display='block';loadAllWorkouts();}
 
-function loadConfig() {
-  try {
-    const saved = localStorage.getItem('periodize_cfg');
-    if (saved) {
-      CFG = JSON.parse(saved);
-      if (CFG.user && CFG.repo && CFG.token) enterApp();
-    }
-  } catch(e) {}
+// ── GITHUB API ────────────────────────────────────────────
+const API=()=>`https://api.github.com/repos/${CFG.user}/${CFG.repo}`;
+const HEADERS=()=>({'Authorization':`token ${CFG.token}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'});
+
+async function ghGet(path){const r=await fetch(`${API()}/contents/${path}`,{headers:HEADERS()});if(!r.ok)throw new Error(r.status);return r.json();}
+async function ghPut(path,message,content,sha){
+  const body={message,content:btoa(unescape(encodeURIComponent(content))),...(sha?{sha}:{})};
+  const r=await fetch(`${API()}/contents/${path}`,{method:'PUT',headers:HEADERS(),body:JSON.stringify(body)});
+  if(!r.ok)throw new Error((await r.json()).message||'API error');
+  return r.json();
 }
+function b64decode(str){return decodeURIComponent(escape(atob(str.replace(/\n/g,''))));}
 
-function enterApp() {
-  document.getElementById('config-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  loadAllWorkouts();
-}
+// ── LOAD DATA ─────────────────────────────────────────────
+let ALL_WORKOUTS=[];
+let prCharts=[];
 
-// ── GITHUB API ──────────────────────────────────────────
-const API = () => `https://api.github.com/repos/${CFG.user}/${CFG.repo}`;
-const HEADERS = () => ({
-  'Authorization': `token ${CFG.token}`,
-  'Content-Type': 'application/json',
-  'Accept': 'application/vnd.github.v3+json'
-});
-
-async function fetchJSONFiles() {
-  const res = await fetch(`${API()}/contents/logs/json`, { headers: HEADERS() });
-  if (!res.ok) return [];
-  const files = await res.json();
-  return files.filter(f => f.name.endsWith('.json'));
-}
-
-async function fetchJSON(url) {
-  const res = await fetch(url, { headers: HEADERS() });
-  if (!res.ok) throw new Error('fetch failed');
-  const data = await res.json();
-  return JSON.parse(atob(data.content.replace(/\n/g,'')));
-}
-
-// ── DATA LOADING ─────────────────────────────────────────
-let ALL_WORKOUTS = [];
-
-async function loadAllWorkouts() {
-  try {
-    const files = await fetchJSONFiles();
-    const workouts = await Promise.all(files.map(f => fetchJSON(f.url)));
-    ALL_WORKOUTS = workouts.sort((a,b) => a.date.localeCompare(b.date));
+async function loadAllWorkouts(){
+  try{
+    let files;
+    try{files=await ghGet('logs/json');}catch(e){files=[];}
+    const jsonFiles=(Array.isArray(files)?files:[]).filter(f=>f.name.endsWith('.json'));
+    const workouts=await Promise.all(jsonFiles.map(async f=>{
+      const d=await ghGet(`logs/json/${f.name}`);
+      return JSON.parse(b64decode(d.content));
+    }));
+    ALL_WORKOUTS=workouts.sort((a,b)=>a.date.localeCompare(b.date));
     updateHeaderMeta();
     renderDashboard();
+    renderProgress();
     renderPRs();
-    populateExerciseSelect();
-  } catch(e) {
-    document.getElementById('dash-content').innerHTML =
-      `<div class="empty-state">Could not load workouts.<br>Check your GitHub config.</div>`;
+    renderAllWorkouts();
+    loadPhilosophy();
+  }catch(e){
+    document.getElementById('dash-content').innerHTML=`<div class="empty-state">Could not load workouts.<br>Check your GitHub config.</div>`;
   }
 }
 
-function updateHeaderMeta() {
-  const el = document.getElementById('header-meta');
-  if (ALL_WORKOUTS.length === 0) return;
-  const last = ALL_WORKOUTS[ALL_WORKOUTS.length - 1];
-  el.innerHTML = `Week ${last.week}<br>${last.phase}`;
+function updateHeaderMeta(){
+  if(!ALL_WORKOUTS.length)return;
+  const last=ALL_WORKOUTS[ALL_WORKOUTS.length-1];
+  document.getElementById('header-meta').innerHTML=`Week ${last.week}<br>${last.phase}`;
 }
 
-// ── METRICS ──────────────────────────────────────────────
-function epley1RM(weight, reps) {
-  return reps === 1 ? weight : weight * (1 + reps / 30);
-}
+// ── HELPERS ───────────────────────────────────────────────
+function chip(s){return `<span class="set-chip">${s.weight_kg}×${s.reps}</span>`;}
 
-function bestSet(sets) {
-  return sets.reduce((best, s) => {
-    const e = epley1RM(s.weight_kg, s.reps);
-    return e > (epley1RM(best.weight_kg, best.reps)) ? s : best;
-  }, sets[0]);
-}
-
-function sessionVolume(workout) {
-  return workout.exercises.reduce((total, ex) => {
-    return total + ex.sets.reduce((s, set) => s + set.weight_kg * set.reps, 0);
-  }, 0);
-}
-
-function weeklyVolume() {
-  const map = {};
-  ALL_WORKOUTS.forEach(w => {
-    const key = `W${w.week}`;
-    map[key] = (map[key] || 0) + sessionVolume(w);
-  });
-  return map;
-}
-
-function avgWeeklyRPE() {
-  const map = {};
-  const count = {};
-  ALL_WORKOUTS.forEach(w => {
-    const key = `W${w.week}`;
-    map[key] = (map[key] || 0) + w.session_rpe;
-    count[key] = (count[key] || 0) + 1;
-  });
-  const result = {};
-  Object.keys(map).forEach(k => result[k] = +(map[k] / count[k]).toFixed(1));
-  return result;
-}
-
-function computePRs() {
-  const prs = {};
-  ALL_WORKOUTS.forEach(w => {
-    w.exercises.forEach(ex => {
-      const bs = bestSet(ex.sets);
-      const e1rm = epley1RM(bs.weight_kg, bs.reps);
-      if (!prs[ex.name] || e1rm > prs[ex.name].e1rm) {
-        prs[ex.name] = { e1rm: +e1rm.toFixed(1), set: bs, date: w.date };
-      }
-    });
-  });
-  return prs;
-}
-
-// ── DASHBOARD ────────────────────────────────────────────
-function renderDashboard() {
-  if (ALL_WORKOUTS.length === 0) {
-    document.getElementById('dash-content').innerHTML =
-      `<div class="empty-state">No workouts yet.<br>Tap + Log to add your first session.</div>`;
+// ── DASHBOARD ─────────────────────────────────────────────
+function renderDashboard(){
+  if(!ALL_WORKOUTS.length){
+    document.getElementById('dash-content').innerHTML=`<div class="empty-state">No workouts yet.<br>Tap + Log to add your first session.</div>`;
     return;
   }
+  const last=ALL_WORKOUTS[ALL_WORKOUTS.length-1];
+  const totalSessions=ALL_WORKOUTS.length;
+  const thisWeekSessions=ALL_WORKOUTS.filter(w=>w.week===last.week).length;
+  const exHTML=last.exercises.map(ex=>`
+    <div class="exercise-row">
+      <div class="ex-name">${ex.name}</div>
+      <div class="sets-row">${ex.sets.map(chip).join('')}</div>
+    </div>`).join('');
 
-  const last = ALL_WORKOUTS[ALL_WORKOUTS.length - 1];
-  const wVol = weeklyVolume();
-  const wRPE = avgWeeklyRPE();
-  const currentWeekKey = `W${last.week}`;
-
-  let setsHTML = last.exercises.map(ex => {
-    const chips = ex.sets.map(s => {
-      const rpe = s.rpe !== undefined ? s.rpe : null;
-      const cls = rpe >= 9 ? 'high-rpe' : '';
-      const label = `${s.weight_kg}×${s.reps}${rpe !== null ? ' @'+rpe : ''}`;
-      return `<span class="set-chip ${cls}">${label}</span>`;
-    }).join('');
-    return `<div class="exercise-row"><div class="ex-name">${ex.name}</div><div class="sets-row">${chips}</div></div>`;
-  }).join('');
-
-  const totalSessions = ALL_WORKOUTS.length;
-  const thisWeekSessions = ALL_WORKOUTS.filter(w => w.week === last.week).length;
-
-  document.getElementById('dash-content').innerHTML = `
+  document.getElementById('dash-content').innerHTML=`
     <div class="section-title">Last Session</div>
     <div class="card">
       <div class="session-header">
         <div class="session-date">${last.date}</div>
         <div class="phase-badge">${last.phase}</div>
       </div>
-      ${setsHTML}
-      ${last.notes ? `<div class="card-sub" style="margin-top:0.6rem;border-top:1px solid var(--border);padding-top:0.6rem">${last.notes}</div>` : ''}
+      ${exHTML}
+      ${last.notes?`<div class="card-sub" style="margin-top:0.6rem;border-top:1px solid var(--border);padding-top:0.6rem">${last.notes}</div>`:''}
     </div>
-
     <div class="stat-grid">
-      <div class="card">
-        <div class="card-label">This Week Vol.</div>
-        <div class="card-value">${Math.round(wVol[currentWeekKey] || 0).toLocaleString()}</div>
-        <div class="card-sub">kg total load</div>
-      </div>
-      <div class="card">
-        <div class="card-label">Avg RPE W${last.week}</div>
-        <div class="card-value">${wRPE[currentWeekKey] || '—'}</div>
-        <div class="card-sub">session avg</div>
-      </div>
-      <div class="card">
-        <div class="card-label">Total Sessions</div>
-        <div class="card-value">${totalSessions}</div>
-        <div class="card-sub">all time</div>
-      </div>
-      <div class="card">
-        <div class="card-label">Week ${last.week}</div>
-        <div class="card-value">${thisWeekSessions}</div>
-        <div class="card-sub">sessions this week</div>
-      </div>
+      <div class="card"><div class="card-label">Total Sessions</div><div class="card-value">${totalSessions}</div><div class="card-sub">all time</div></div>
+      <div class="card"><div class="card-label">Week ${last.week}</div><div class="card-value">${thisWeekSessions}</div><div class="card-sub">sessions this week</div></div>
     </div>
+    <div class="section-title">Training Philosophy</div>
+    <div class="philosophy-display placeholder" id="phil-display" onclick="openPhilosophy()">Tap to write your training philosophy...</div>
+    <div class="philosophy-edit" id="phil-edit">
+      <textarea id="phil-textarea" placeholder="Write your training goals, principles, periodization rationale..."></textarea>
+      <div class="philosophy-hint">Saved to your GitHub repo as philosophy.txt</div>
+      <div class="phil-btn-row">
+        <button class="btn-sm" onclick="savePhilosophy()">Save</button>
+        <button class="btn-sm ghost" onclick="cancelPhilosophy()">Cancel</button>
+      </div>
+    </div>`;
+}
 
-    <div class="section-title">Weekly Volume</div>
-    <div class="card">
-      <div class="chart-wrap"><canvas id="vol-chart"></canvas></div>
-    </div>
-  `;
+// ── PHILOSOPHY ────────────────────────────────────────────
+let philSHA=null;
+async function loadPhilosophy(){
+  try{
+    const d=await ghGet('philosophy.txt');
+    philSHA=d.sha;
+    const text=b64decode(d.content);
+    setPhilDisplay(text);
+  }catch(e){}
+}
+function setPhilDisplay(text){
+  const el=document.getElementById('phil-display');
+  if(!el)return;
+  if(text&&text.trim()){el.textContent=text;el.classList.remove('placeholder');}
+  else{el.textContent='Tap to write your training philosophy...';el.classList.add('placeholder');}
+}
+function openPhilosophy(){
+  const d=document.getElementById('phil-display'),e=document.getElementById('phil-edit'),ta=document.getElementById('phil-textarea');
+  if(!d.classList.contains('placeholder'))ta.value=d.textContent;
+  d.style.display='none';e.style.display='flex';ta.focus();
+}
+function cancelPhilosophy(){
+  document.getElementById('phil-display').style.display='block';
+  document.getElementById('phil-edit').style.display='none';
+}
+async function savePhilosophy(){
+  const text=document.getElementById('phil-textarea').value;
+  try{
+    const r=await ghPut('philosophy.txt','update: training philosophy',text,philSHA);
+    philSHA=r.content.sha;
+    setPhilDisplay(text);
+    cancelPhilosophy();
+  }catch(e){alert('Could not save: '+e.message);}
+}
 
-  // Volume chart
-  const weeks = Object.keys(wVol).sort((a,b) => parseInt(a.slice(1)) - parseInt(b.slice(1)));
-  new Chart(document.getElementById('vol-chart'), {
-    type: 'bar',
-    data: {
-      labels: weeks,
-      datasets: [{
-        data: weeks.map(w => wVol[w]),
-        backgroundColor: weeks.map((w,i) => i === weeks.length-1 ? '#e8ff47' : '#2a2a2a'),
-        borderColor: 'transparent',
-        borderRadius: 2
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { grid: { color: '#1a1a1a' }, ticks: { color: '#666', font: { family: 'IBM Plex Mono', size: 10 } } },
-        y: { grid: { color: '#1a1a1a' }, ticks: { color: '#666', font: { family: 'IBM Plex Mono', size: 10 } } }
-      }
-    }
+// ── PROGRESS ──────────────────────────────────────────────
+function renderProgress(){
+  if(!ALL_WORKOUTS.length){document.getElementById('progress-content').innerHTML=`<div class="empty-state">No workouts yet.</div>`;return;}
+  const names=[];
+  ALL_WORKOUTS.forEach(w=>w.exercises.forEach(ex=>{if(!names.includes(ex.name))names.push(ex.name);}));
+  names.sort();
+
+  let html='';
+  names.forEach(name=>{
+    const sessions=ALL_WORKOUTS.filter(w=>w.exercises.some(e=>e.name===name)).slice(-3).reverse();
+    const rows=sessions.map(w=>{
+      const ex=w.exercises.find(e=>e.name===name);
+      return `<div class="recent-session-row">
+        <div class="rs-date">${w.date.slice(5)}<br><span style="font-size:0.6rem;color:#444">W${w.week}</span></div>
+        <div class="rs-sets">${ex.sets.map(chip).join('')}</div>
+      </div>`;
+    }).join('');
+    html+=`<div class="progress-ex-block card"><div class="progress-ex-title">${name}</div>${rows}</div>`;
+  });
+  document.getElementById('progress-content').innerHTML=html;
+}
+
+// ── PRs ───────────────────────────────────────────────────
+function renderPRs(){
+  prCharts.forEach(c=>c.destroy()); prCharts=[];
+  if(!ALL_WORKOUTS.length){document.getElementById('prs-content').innerHTML=`<div class="empty-state">No workouts yet.</div>`;return;}
+
+  const names=[];
+  ALL_WORKOUTS.forEach(w=>w.exercises.forEach(ex=>{if(!names.includes(ex.name))names.push(ex.name);}));
+  names.sort();
+
+  let html='';
+  const toChart=[];
+
+  names.forEach(name=>{
+    const entries=[];
+    ALL_WORKOUTS.forEach(w=>{
+      w.exercises.forEach(ex=>{
+        if(ex.name!==name)return;
+        ex.sets.forEach(s=>{if(s.reps===1)entries.push({date:w.date,weight:s.weight_kg});});
+      });
+    });
+    if(!entries.length)return;
+    const best=entries.reduce((b,e)=>e.weight>b.weight?e:b,entries[0]);
+    const cid=`prc-${name.replace(/[^a-z0-9]/gi,'-')}`;
+    html+=`<div class="pr-ex-block card">
+      <div class="pr-ex-title">${name}</div>
+      <div class="pr-best">PR — ${best.weight} kg &nbsp;·&nbsp; ${best.date}</div>
+      <div class="chart-wrap"><canvas id="${cid}"></canvas></div>
+    </div>`;
+    toChart.push({entries,cid});
+  });
+
+  if(!html)html=`<div class="empty-state">No 1-rep max sets recorded yet.<br>Log a set as <strong>weightx1</strong> to track PRs here.</div>`;
+  document.getElementById('prs-content').innerHTML=html;
+
+  requestAnimationFrame(()=>{
+    toChart.forEach(({entries,cid})=>{
+      const ctx=document.getElementById(cid); if(!ctx)return;
+      const sorted=[...entries].sort((a,b)=>a.date.localeCompare(b.date));
+      const c=new Chart(ctx,{type:'line',data:{labels:sorted.map(e=>e.date.slice(5)),datasets:[{data:sorted.map(e=>e.weight),borderColor:'#e8ff47',backgroundColor:'#e8ff4718',borderWidth:2,pointBackgroundColor:'#e8ff47',pointRadius:5,tension:0.2,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'#1a1a1a'},ticks:{color:'#666',font:{family:'IBM Plex Mono',size:9}}},y:{grid:{color:'#1a1a1a'},ticks:{color:'#666',font:{family:'IBM Plex Mono',size:10}}}}}});
+      prCharts.push(c);
+    });
   });
 }
 
-// ── PRs ──────────────────────────────────────────────────
-function renderPRs() {
-  const prs = computePRs();
-  const tbody = document.getElementById('pr-body');
-  const entries = Object.entries(prs).sort((a,b) => a[0].localeCompare(b[0]));
-  if (entries.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="4" style="color:var(--muted);text-align:center;padding:1rem">No data yet</td></tr>`;
-    return;
-  }
-  tbody.innerHTML = entries.map(([name, pr]) =>
-    `<tr>
-      <td>${name}</td>
-      <td class="pr-val">${pr.e1rm} kg</td>
-      <td>${pr.set.weight_kg}×${pr.set.reps}${pr.set.rpe !== undefined ? ' @'+pr.set.rpe : ''}</td>
-      <td style="color:var(--muted)">${pr.date}</td>
-    </tr>`
-  ).join('');
+// ── ALL WORKOUTS ──────────────────────────────────────────
+function renderAllWorkouts(){
+  if(!ALL_WORKOUTS.length){document.getElementById('all-content').innerHTML=`<div class="empty-state">No workouts yet.</div>`;return;}
+  const html=[...ALL_WORKOUTS].reverse().map(w=>{
+    const exHTML=w.exercises.map(ex=>`<div class="exercise-row"><div class="ex-name">${ex.name}</div><div class="sets-row">${ex.sets.map(chip).join('')}</div></div>`).join('');
+    return `<div class="all-session-block">
+      <div class="all-session-hdr"><div class="all-session-date">${w.date}</div><div class="all-phase">${w.phase} · W${w.week}</div></div>
+      <div class="card" style="padding:0.5rem 1rem">${exHTML}${w.notes?`<div class="card-sub" style="margin-top:0.5rem;padding-top:0.5rem;border-top:1px solid var(--border)">${w.notes}</div>`:''}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('all-content').innerHTML=html;
 }
 
-// ── PROGRESS CHARTS ──────────────────────────────────────
-let progressCharts = [];
-
-function allExerciseNames() {
-  const names = new Set();
-  ALL_WORKOUTS.forEach(w => w.exercises.forEach(ex => names.add(ex.name)));
-  return [...names].sort();
+// ── LOGO DOUBLE-TAP ───────────────────────────────────────
+let tapCount=0,tapTimer=null;
+function handleLogoTap(){
+  tapCount++;
+  clearTimeout(tapTimer);
+  if(tapCount>=2){tapCount=0;showAll();return;}
+  tapTimer=setTimeout(()=>{tapCount=0;},400);
+}
+function showAll(){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-all').classList.add('active');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  const logo=document.getElementById('logo');
+  logo.classList.add('flash');setTimeout(()=>logo.classList.remove('flash'),200);
+}
+function closeAll(){
+  document.getElementById('panel-all').classList.remove('active');
+  document.getElementById('panel-dashboard').classList.add('active');
+  document.querySelector('nav button').classList.add('active');
 }
 
-function populateExerciseSelect() {
-  const sel = document.getElementById('ex-select');
-  const names = allExerciseNames();
-  sel.innerHTML = names.map(n => `<option value="${n}">${n}</option>`).join('');
-  if (names.length) renderProgressCharts();
-}
-
-function renderProgressCharts() {
-  progressCharts.forEach(c => c.destroy());
-  progressCharts = [];
-
-  const name = document.getElementById('ex-select').value;
-  const sessions = ALL_WORKOUTS
-    .filter(w => w.exercises.some(e => e.name === name))
-    .map(w => {
-      const ex = w.exercises.find(e => e.name === name);
-      const bs = bestSet(ex.sets);
-      const vol = ex.sets.reduce((s, set) => s + set.weight_kg * set.reps, 0);
-      const avgRPE = ex.sets.filter(s => s.rpe !== undefined).reduce((s,set,_,a) => s + set.rpe/a.length, 0);
-      return {
-        date: w.date,
-        week: w.week,
-        e1rm: +epley1RM(bs.weight_kg, bs.reps).toFixed(1),
-        vol: +vol.toFixed(0),
-        avgRPE: +avgRPE.toFixed(1)
-      };
-    });
-
-  if (sessions.length < 2) {
-    document.getElementById('progress-content').innerHTML =
-      `<div class="empty-state">Need at least 2 sessions of ${name} to show trends.</div>`;
-    return;
-  }
-
-  const labels = sessions.map(s => `W${s.week}\n${s.date.slice(5)}`);
-  const accent = '#e8ff47';
-  const orange = '#ff6b35';
-  const blue = '#47b4ff';
-
-  const chartDefs = [
-    { id: 'ch-1rm', title: 'Estimated 1RM (kg)', data: sessions.map(s => s.e1rm), color: accent },
-    { id: 'ch-vol', title: 'Volume per Session (kg)', data: sessions.map(s => s.vol), color: orange },
-    { id: 'ch-rpe', title: 'Avg Set RPE', data: sessions.map(s => s.avgRPE), color: blue },
-  ];
-
-  document.getElementById('progress-content').innerHTML = chartDefs.map(c => `
-    <div class="card">
-      <div class="chart-title">${c.title}</div>
-      <div class="chart-wrap"><canvas id="${c.id}"></canvas></div>
-    </div>
-  `).join('');
-
-  chartDefs.forEach(def => {
-    const ctx = document.getElementById(def.id);
-    const chart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels,
-        datasets: [{
-          data: def.data,
-          borderColor: def.color,
-          backgroundColor: def.color + '18',
-          borderWidth: 2,
-          pointBackgroundColor: def.color,
-          pointRadius: 4,
-          tension: 0.3,
-          fill: true
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { grid: { color: '#1a1a1a' }, ticks: { color: '#666', font: { family: 'IBM Plex Mono', size: 9 } } },
-          y: { grid: { color: '#1a1a1a' }, ticks: { color: '#666', font: { family: 'IBM Plex Mono', size: 10 } } }
-        }
-      }
-    });
-    progressCharts.push(chart);
-  });
-}
-
-// ── TAB SWITCHING ────────────────────────────────────────
-function switchTab(name, btn) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-  document.getElementById('panel-' + name).classList.add('active');
+// ── TABS ──────────────────────────────────────────────────
+function switchTab(name,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-all').classList.remove('active');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
   btn.classList.add('active');
-  if (name === 'progress') renderProgressCharts();
 }
 
-// ── LOG SUBMISSION ───────────────────────────────────────
-async function submitLog() {
-  const text = document.getElementById('log-input').value.trim();
-  if (!text) return;
-
-  const dateMatch = text.match(/^(\d{4}-\d{2}-\d{2})/);
-  if (!dateMatch) {
-    setStatus('err', 'First line must start with a date: YYYY-MM-DD');
-    return;
-  }
-  const filename = `logs/raw/${dateMatch[1]}.txt`;
-
-  const btn = document.getElementById('submit-btn');
-  btn.disabled = true;
-  setStatus('', 'Committing to GitHub...');
-
-  try {
-    // Check if file exists first
-    let sha = undefined;
-    const check = await fetch(`${API()}/contents/${filename}`, { headers: HEADERS() });
-    if (check.ok) {
-      const existing = await check.json();
-      sha = existing.sha;
-    }
-
-    const body = {
-      message: `log: workout ${dateMatch[1]}`,
-      content: btoa(unescape(encodeURIComponent(text))),
-      ...(sha ? { sha } : {})
-    };
-
-    const res = await fetch(`${API()}/contents/${filename}`, {
-      method: 'PUT',
-      headers: HEADERS(),
-      body: JSON.stringify(body)
-    });
-
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.message || 'GitHub API error');
-    }
-
-    setStatus('ok', `✓ Committed! GitHub Action will parse it shortly.`);
-    document.getElementById('log-input').value = '';
-    setTimeout(() => loadAllWorkouts(), 35000); // reload after action runs
-  } catch(e) {
-    setStatus('err', `✗ ${e.message}`);
-  } finally {
-    btn.disabled = false;
-  }
+// ── LOG ───────────────────────────────────────────────────
+async function submitLog(){
+  const text=document.getElementById('log-input').value.trim();
+  if(!text)return;
+  const dm=text.match(/^(\d{4}-\d{2}-\d{2})/);
+  if(!dm){setStatus('err','First line must start with YYYY-MM-DD');return;}
+  const filename=`logs/raw/${dm[1]}.txt`;
+  const btn=document.getElementById('submit-btn');
+  btn.disabled=true; setStatus('','Committing to GitHub...');
+  try{
+    let sha;
+    try{const e=await ghGet(filename.replace('logs/raw/','logs/raw/'));sha=e.sha;}catch(e){}
+    // re-fetch properly
+    try{const e2=await fetch(`${API()}/contents/${filename}`,{headers:HEADERS()});if(e2.ok)sha=(await e2.json()).sha;}catch(e){}
+    await ghPut(filename,`log: workout ${dm[1]}`,text,sha);
+    setStatus('ok','✓ Committed! Dashboard updates in ~35s.');
+    document.getElementById('log-input').value='';
+    setTimeout(()=>loadAllWorkouts(),35000);
+  }catch(e){setStatus('err','✗ '+e.message);}
+  finally{btn.disabled=false;}
 }
+function setStatus(type,msg){const el=document.getElementById('log-status');el.className='status-msg'+(type?' '+type:'');el.textContent=msg;}
 
-function setStatus(type, msg) {
-  const el = document.getElementById('log-status');
-  el.className = 'status-msg' + (type ? ' ' + type : '');
-  el.textContent = msg;
-}
-
-// ── INIT ─────────────────────────────────────────────────
+// ── INIT ──────────────────────────────────────────────────
 loadConfig();
 </script>
 </body>
