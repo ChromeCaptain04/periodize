@@ -1,0 +1,79 @@
+{
+  "date": "2026-03-29",
+  "week": 1,
+  "phase": "accumulation",
+  "notes": "legs sore so no deadlift",
+  "exercises": [
+    {
+      "name": "Close grip dumbell press",
+      "sets": [
+        {
+          "weight_kg": 25.0,
+          "reps": 8
+        },
+        {
+          "weight_kg": 25.0,
+          "reps": 8
+        },
+        {
+          "weight_kg": 25.0,
+          "reps": 8
+        },
+        {
+          "weight_kg": 25.0,
+          "reps": 8
+        },
+        {
+          "weight_kg": 25.0,
+          "reps": 7
+        }
+      ]
+    },
+    {
+      "name": "Seated dumbell curl",
+      "sets": [
+        {
+          "weight_kg": 15.0,
+          "reps": 8
+        },
+        {
+          "weight_kg": 15.0,
+          "reps": 8
+        },
+        {
+          "weight_kg": 15.0,
+          "reps": 6
+        },
+        {
+          "weight_kg": 15.0,
+          "reps": 7
+        }
+      ]
+    },
+    {
+      "name": "Wrist curl",
+      "sets": [
+        {
+          "weight_kg": 12.5,
+          "reps": 8
+        },
+        {
+          "weight_kg": 12.5,
+          "reps": 8
+        },
+        {
+          "weight_kg": 12.5,
+          "reps": 8
+        },
+        {
+          "weight_kg": 12.5,
+          "reps": 8
+        },
+        {
+          "weight_kg": 12.5,
+          "reps": 8
+        }
+      ]
+    }
+  ]
+}
