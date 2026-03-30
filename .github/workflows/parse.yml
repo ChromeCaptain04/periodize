@@ -4,6 +4,17 @@ on:
   push:
     paths:
       - 'logs/raw/*.txt'
+      - 'scripts/parse_workout.py'
+  workflow_dispatch:
+    inputs:
+      force_reprocess:
+        description: 'Reprocess ALL raw files (overwrites existing JSON)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
 
 jobs:
   parse:
@@ -19,8 +30,14 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Parse new workout logs
-        run: python scripts/parse_workout.py
+      - name: Parse workout logs
+        run: |
+          if [ "${{ github.event.inputs.force_reprocess }}" = "true" ]; then
+            echo "Force reprocessing all files..."
+            python scripts/parse_workout.py --force
+          else
+            python scripts/parse_workout.py
+          fi
 
       - name: Commit parsed JSON
         run: |

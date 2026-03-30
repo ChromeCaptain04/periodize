@@ -6,13 +6,12 @@ Format:
   2026-03-24 | 1 | accumulation | Optional notes here
   Squat: 100x5, 100x5, 102.5x5
   Bench: 80x5, 82.5x5
-  RDL: 70x8, 70x8
 
-Header fields (pipe-separated):
-  date | week | phase | notes (optional)
-
-Exercise lines:
-  ExerciseName: weightxreps, weightxreps, ...
+Changes:
+  - weight stored as float, display label includes "kg" (e.g. "25kg×8")
+  - consecutive identical sets are grouped: {weight_kg, reps, count}
+    e.g. 25x8, 25x8, 25x8 → {weight_kg:25, reps:8, count:3}
+    non-consecutive identical stay separate
 """
 
 import json
@@ -35,14 +34,44 @@ def parse_set(set_str: str) -> dict:
     }
 
 
+def group_consecutive_sets(sets: list) -> list:
+    """
+    Combine runs of consecutive identical sets into a single entry with a count.
+    e.g. [{w:25,r:8},{w:25,r:8},{w:25,r:8},{w:25,r:7}]
+      -> [{w:25,r:8,count:3},{w:25,r:7,count:1}]
+    Sets with count=1 omit the count field for cleanliness.
+    """
+    if not sets:
+        return []
+    grouped = []
+    current = dict(sets[0])
+    run = 1
+    for s in sets[1:]:
+        if s["weight_kg"] == current["weight_kg"] and s["reps"] == current["reps"]:
+            run += 1
+        else:
+            entry = {"weight_kg": current["weight_kg"], "reps": current["reps"]}
+            if run > 1:
+                entry["count"] = run
+            grouped.append(entry)
+            current = dict(s)
+            run = 1
+    entry = {"weight_kg": current["weight_kg"], "reps": current["reps"]}
+    if run > 1:
+        entry["count"] = run
+    grouped.append(entry)
+    return grouped
+
+
 def parse_exercise_line(line: str) -> dict:
     if ":" not in line:
         raise ValueError(f"Exercise line missing colon: '{line}'")
     name, sets_str = line.split(":", 1)
-    sets = [parse_set(s) for s in sets_str.split(",") if s.strip()]
-    if not sets:
+    raw_sets = [parse_set(s) for s in sets_str.split(",") if s.strip()]
+    if not raw_sets:
         raise ValueError(f"No sets found for '{name.strip()}'")
-    return {"name": name.strip(), "sets": sets}
+    grouped = group_consecutive_sets(raw_sets)
+    return {"name": name.strip(), "sets": grouped}
 
 
 def parse_workout(text: str) -> dict:
@@ -50,19 +79,15 @@ def parse_workout(text: str) -> dict:
     if not lines:
         raise ValueError("Empty workout text")
 
-    # Header
     parts = [p.strip() for p in lines[0].split("|")]
     if len(parts) < 3:
-        raise ValueError(
-            f"Header needs at least: date | week | phase\nGot: {lines[0]}"
-        )
+        raise ValueError(f"Header needs at least: date | week | phase\nGot: {lines[0]}")
 
     date  = parts[0]
     week  = int(parts[1])
     phase = parts[2]
     notes = parts[3] if len(parts) > 3 else ""
 
-    # Exercises
     exercises = []
     errors = []
     for line in lines[1:]:
@@ -76,13 +101,7 @@ def parse_workout(text: str) -> dict:
     if errors:
         raise ValueError("Parse errors:\n" + "\n".join(errors))
 
-    return {
-        "date": date,
-        "week": week,
-        "phase": phase,
-        "notes": notes,
-        "exercises": exercises
-    }
+    return {"date": date, "week": week, "phase": phase, "notes": notes, "exercises": exercises}
 
 
 def main():
@@ -92,10 +111,11 @@ def main():
         return
 
     parsed = skipped = errors = 0
+    force = "--force" in sys.argv  # reprocess all if --force flag passed
 
     for txt_path in raw_files:
         json_path = JSON_DIR / (txt_path.stem + ".json")
-        if json_path.exists():
+        if json_path.exists() and not force:
             skipped += 1
             continue
 
