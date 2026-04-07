@@ -170,6 +170,13 @@
       color: var(--text);
     }
 
+    .header-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
     .header-meta {
       font-size: 0.75rem;
       color: var(--muted);
@@ -177,6 +184,20 @@
       line-height: 1.4;
       text-transform: uppercase;
       letter-spacing: 0.05em;
+    }
+
+    .header-reconfig {
+      font-size: 0.6rem;
+      color: var(--muted2);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      margin-top: 0.25rem;
+      transition: color 0.2s;
+    }
+
+    .header-reconfig:hover {
+      color: var(--accent);
     }
 
     nav {
@@ -859,7 +880,7 @@
     <div class="config-card">
       <div><label>GitHub Username</label><input id="cfg-user" type="text" placeholder="username" autocomplete="off"
           autocorrect="off" autocapitalize="off"></div>
-      <div><label>Repository Name</label><input id="cfg-repo" type="text" placeholder="spartan-logs" autocomplete="off"
+      <div><label>Repository Name</label><input id="cfg-repo" type="text" placeholder="SPARTAN" autocomplete="off"
           autocorrect="off" autocapitalize="off"></div>
       <div><label>Branch Name</label><input id="cfg-branch" type="text" placeholder="main" value="main"
           autocomplete="off" autocorrect="off" autocapitalize="off"></div>
@@ -877,7 +898,10 @@
   <div id="app">
     <header>
       <div class="logo" id="logo" onclick="handleLogoTap()">SPARTAN</div>
-      <div class="header-meta" id="header-meta"></div>
+      <div class="header-right">
+        <div class="header-meta" id="header-meta"></div>
+        <div class="header-reconfig" onclick="resetConfig()">[ RECONFIGURE ]</div>
+      </div>
     </header>
     <nav>
       <button class="active" onclick="switchTab('dashboard',this)">Dashboard</button>
@@ -972,6 +996,7 @@
     }
     function loadConfig() { try { const s = localStorage.getItem('spartan_cfg'); if (s) { CFG = JSON.parse(s); if (CFG.user && CFG.repo && CFG.token) { document.getElementById('cfg-user').value = CFG.user; document.getElementById('cfg-repo').value = CFG.repo; document.getElementById('cfg-branch').value = CFG.branch || 'main'; document.getElementById('cfg-token').value = CFG.token; enterApp(); } } } catch (e) { } }
     function enterApp() { document.getElementById('config-screen').style.display = 'none'; document.getElementById('app').style.display = 'block'; loadAllWorkouts(); }
+    function resetConfig() { localStorage.removeItem('spartan_cfg'); location.reload(); }
 
     // ── GITHUB ────────────────────────────────────────────────
     const API = () => `https://api.github.com/repos/${CFG.user}/${CFG.repo}`;
