@@ -1200,21 +1200,9 @@
         return html;
       }
 
-      let statusText = '';
-      for (const ph of phases) {
-        if (ph.count < 12) {
-          const week = Math.floor(ph.count / 3) + 1;
-          const withinWeek = ph.count % 3;
-          const remaining = 3 - withinWeek;
-          statusText = `${ph.label} W${Math.min(week, 4)} · ${remaining} TO NEXT`;
-          break;
-        }
-      }
-
       html += `<div class="cycle-wrap">
     <div class="cycle-top">
       <span class="cycle-label">Progress</span>
-      <span class="cycle-status">${statusText}</span>
     </div>
     <div class="tube-scroll"><div class="tube-map">`;
 
