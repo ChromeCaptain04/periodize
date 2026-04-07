@@ -1,0 +1,71 @@
+{
+  "date": "2026-04-07",
+  "week": 2,
+  "phase": "accumulation",
+  "notes": "post marine workout with Will, need to add more back exercises, especially pull ups. Thinking about moving to a 4 day split",
+  "exercises": [
+    {
+      "name": "Flat dumbell press",
+      "sets": [
+        {
+          "weight_kg": 30.0,
+          "reps": 7
+        },
+        {
+          "weight_kg": 30.0,
+          "reps": 8
+        },
+        {
+          "weight_kg": 30.0,
+          "reps": 7,
+          "count": 2
+        },
+        {
+          "weight_kg": 30.0,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "name": "Yates row",
+      "sets": [
+        {
+          "weight_kg": 30.0,
+          "reps": 8,
+          "count": 5
+        }
+      ]
+    },
+    {
+      "name": "Seated dumbell curls",
+      "sets": [
+        {
+          "weight_kg": 17.5,
+          "reps": 6
+        },
+        {
+          "weight_kg": 17.5,
+          "reps": 5
+        },
+        {
+          "weight_kg": 15.0,
+          "reps": 8
+        },
+        {
+          "weight_kg": 15.0,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "name": "Reverse barbell curls",
+      "sets": [
+        {
+          "weight_kg": 25.0,
+          "reps": 8,
+          "count": 5
+        }
+      ]
+    }
+  ]
+}
