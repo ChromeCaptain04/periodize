@@ -1,755 +1,1513 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PERIODIZE</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.30.0/date_fns.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPARTAN</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.30.0/date_fns.min.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <style>
+    /* Integrating Latin Modern Sans (web equivalent of Computer Modern Sans) */
+    @font-face {
+      font-family: 'Latin Modern Sans';
+      src: url('https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts/lmsans10-regular.woff2') format('woff2'),
+        url('https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts/lmsans10-regular.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
 
-  :root {
-    --bg:#0a0a0a; --surface:#111111; --surface2:#1a1a1a; --border:#2a2a2a;
-    --accent:#e8ff47; --text:#f0f0f0; --muted:#333; --muted2:#666;
-    --danger:#ff4444; --good:#47ff8a;
-    --acc:#4a9eff; --str:#47ff8a; --pek:#ff6b35;
-  }
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;min-height:100vh;font-size:14px;}
+    @font-face {
+      font-family: 'Latin Modern Sans';
+      src: url('https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts/lmsans10-bold.woff2') format('woff2'),
+        url('https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts/lmsans10-bold.woff') format('woff');
+      font-weight: bold;
+      font-style: normal;
+    }
 
-  /* CONFIG */
-  #config-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:2rem;gap:1.5rem;}
-  .config-title{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;letter-spacing:0.15em;color:var(--accent);}
-  .config-sub{color:var(--muted2);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;text-align:center;}
-  .config-card{background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:1.5rem;width:100%;max-width:420px;display:flex;flex-direction:column;gap:1rem;}
-  .config-card label{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--muted2);text-transform:uppercase;letter-spacing:0.1em;display:block;margin-bottom:0.4rem;}
-  .config-card input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:2px;padding:0.6rem 0.8rem;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:0.8rem;outline:none;transition:border-color 0.2s;}
-  .config-card input:focus{border-color:var(--accent);}
-  .config-hint{font-size:0.7rem;color:var(--muted2);line-height:1.5;}
-  .config-hint a{color:var(--accent);}
+    :root {
+      --bg: #F9F6F0;
+      /* Marble White */
+      --surface: #FFFFFF;
+      --surface2: #F0EBE1;
+      /* Stone Grey */
+      --border: #DCD6CC;
+      --accent: #A33F1F;
+      /* Terracotta / Spartan Bronze */
+      --text: #2B2B2B;
+      --muted: #595959;
+      --muted2: #8C8C8C;
+      --danger: #D32F2F;
+      --good: #388E3C;
 
-  /* SHELL */
-  #app{display:none;}
-  header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1rem;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100;}
-  .logo{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:0.15em;color:var(--accent);cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;transition:color 0.15s;}
-  .logo.flash{color:var(--text);}
-  .header-meta{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted2);text-align:right;line-height:1.6;}
-  nav{display:flex;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:52px;z-index:99;}
-  nav button{flex:1;background:none;border:none;border-bottom:2px solid transparent;color:var(--muted2);font-family:'IBM Plex Mono',monospace;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;padding:0.75rem 0.5rem;cursor:pointer;transition:all 0.15s;}
-  nav button.active{color:var(--accent);border-bottom-color:var(--accent);}
+      /* Phase Colors adapted for light mode */
+      --acc: #1976D2;
+      --str: #2E7D32;
+      --pek: #D84315;
+    }
 
-  .panel{display:none;padding:1rem 1rem 4rem;}
-  .panel.active{display:block;}
-  #panel-all{display:none;padding:1rem 1rem 4rem;}
-  #panel-all.active{display:block;}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  /* CARDS */
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:1rem;margin-bottom:0.75rem;}
-  .card-label{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.4rem;}
-  .card-value{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;color:var(--accent);letter-spacing:0.05em;line-height:1;}
-  .card-sub{font-size:0.7rem;color:var(--muted2);margin-top:0.25rem;}
-  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.75rem;}
-  .section-title{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:0.15em;color:var(--muted2);margin-bottom:0.6rem;}
-  .empty-state{text-align:center;color:var(--muted2);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;padding:3rem 1rem;line-height:1.8;}
-  .loading{text-align:center;color:var(--muted2);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;padding:2rem;animation:pulse 1.5s ease-in-out infinite;}
-  @keyframes pulse{0%,100%{opacity:0.3}50%{opacity:1}}
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Computer Modern Sans', 'Latin Modern Sans', 'CMU Sans Serif', sans-serif;
+      min-height: 100vh;
+      font-size: 15px;
+      line-height: 1.5;
+    }
 
-  /* SESSION */
-  .session-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.5rem;}
-  .session-date{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--text);letter-spacing:0.1em;}
-  .phase-badge{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;background:var(--accent);color:var(--bg);padding:0.2rem 0.5rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:600;}
-  .phase-badge.accessory{background:var(--muted2);color:var(--bg);}
-  .phase-badge.strength{background:var(--str);color:var(--bg);}
-  .phase-badge.peaking{background:var(--pek);color:var(--bg);}
-  .exercise-row{border-top:1px solid var(--border);padding:0.55rem 0;}
-  .ex-name{font-weight:500;font-size:0.85rem;margin-bottom:0.35rem;}
-  .sets-row{display:flex;flex-wrap:wrap;gap:0.35rem;}
-  .set-chip{background:var(--surface2);border:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:0.68rem;padding:0.18rem 0.4rem;border-radius:2px;color:var(--text);}
-  .set-num{color:var(--muted2);margin-right:0.2rem;}
-  .set-count{color:var(--accent);margin-right:0.15rem;}
+    /* CONFIG */
+    #config-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      gap: 1.5rem;
+    }
 
-  /* RECENCY */
-  .recency-latest{font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:var(--bg);background:var(--accent);padding:0.12rem 0.35rem;border-radius:2px;font-weight:600;white-space:nowrap;}
+    .config-title {
+      font-size: 3rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      font-weight: bold;
+      text-transform: uppercase;
+    }
 
-  /* ── TUBE MAP ─────────────────────────────────────────── */
-  /*
-    Per phase: 4 milestone dots at indices 0,4,8,12 (0-indexed within 13-station track)
-    3 small dots between each consecutive pair of milestones
-    Track indices: 0(M) 1(s) 2(s) 3(s) 4(M) 5(s) 6(s) 7(s) 8(M) 9(s) 10(s) 11(s) 12(M)
-    = 13 stations, 4 milestones, 9 smalls
-    Phase complete = 13 workouts (full 4 weeks, last milestone IS the completion marker)
+    .config-sub {
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-align: center;
+      letter-spacing: 0.05em;
+    }
 
-    Lighting rule:
-      Station 0 (first milestone): lit when count >= 1
-      Station i (i>0): lit when count >= i+1
-      So station i needs i+1 workouts.
-      First milestone at 0: lit immediately on first workout.
-      Final milestone at 12: lit when count >= 13.
+    .config-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 2rem;
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
 
-    Milestone dot sizes:
-      First of phase (index 0): slightly bigger, acts as phase start marker
-      Others: standard milestone size
-      All milestones: filled circle, phase colour when lit, faded+coloured when not
+    .config-card label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      display: block;
+      margin-bottom: 0.4rem;
+      font-weight: bold;
+    }
 
-    Small dots: phase colour when lit, very faded when not.
+    .config-card input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 0.75rem;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
 
-    Unstarted phases: show coloured but faded throughout (not grey).
-    Started phases: lit stations bright, unlit stations faded.
-  */
-  .cycle-wrap{background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:1rem;margin-bottom:0.75rem;}
-  .cycle-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
-  .cycle-label{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted2);text-transform:uppercase;letter-spacing:0.1em;}
-  .cycle-status{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted2);text-align:right;}
-  .cycle-complete{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:0.75rem;color:var(--accent);padding:0.5rem 0;letter-spacing:0.08em;}
-  .tube-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;}
-  .tube-map{display:flex;align-items:center;min-width:min-content;padding:0.3rem 0.1rem;}
-  /* phase wrapper */
-  .t-phase{display:inline-flex;flex-direction:column;align-items:flex-start;}
-  .t-phase-lbl{font-family:'IBM Plex Mono',monospace;font-size:0.58rem;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.6rem;white-space:nowrap;padding:0.1rem 0.3rem;border-radius:2px;}
-  /* track is a single flex row — all dots and lines inline */
-  .t-track{display:flex;flex-direction:row;align-items:center;}
-  .t-line{display:inline-block;height:3px;flex-shrink:0;vertical-align:middle;}
-  .t-dot-lg{display:inline-block;border-radius:50%;flex-shrink:0;vertical-align:middle;}
-  .t-dot-lg-first{display:inline-block;border-radius:50%;flex-shrink:0;vertical-align:middle;}
-  .t-dot-sm{display:inline-block;border-radius:50%;flex-shrink:0;vertical-align:middle;}
-  .t-bridge{display:inline-block;height:3px;width:16px;flex-shrink:0;vertical-align:middle;align-self:center;}
+    .config-card input:focus {
+      border-color: var(--accent);
+    }
 
-  /* ── HEATMAP ──────────────────────────────────────────── */
-  .heatmap-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-  .heatmap-grid{display:flex;gap:3px;padding:0.25rem 0;min-width:min-content;}
-  .heatmap-col{display:flex;flex-direction:column;gap:3px;}
-  .heatmap-cell{width:11px;height:11px;border-radius:2px;flex-shrink:0;}
-  .heatmap-month-row{display:flex;gap:3px;min-width:min-content;margin-bottom:3px;}
-  .heatmap-month-lbl{font-family:'IBM Plex Mono',monospace;font-size:0.55rem;color:var(--muted2);width:11px;text-align:center;}
-  .heatmap-day-labels{display:flex;flex-direction:column;gap:3px;margin-right:4px;padding-top:0;}
-  .heatmap-day-lbl{font-family:'IBM Plex Mono',monospace;font-size:0.5rem;color:var(--muted2);height:11px;display:flex;align-items:center;line-height:1;}
+    .config-hint {
+      font-size: 0.8rem;
+      color: var(--muted2);
+      line-height: 1.5;
+    }
 
-  /* PHILOSOPHY */
-  .philosophy-display{background:var(--surface2);border:1px solid var(--border);border-radius:2px;padding:1rem;font-size:0.85rem;line-height:1.7;color:var(--text);white-space:pre-wrap;min-height:72px;cursor:pointer;transition:border-color 0.2s;}
-  .philosophy-display:hover{border-color:var(--accent);}
-  .philosophy-display.placeholder{color:var(--muted2);font-style:italic;}
-  .philosophy-edit{display:none;flex-direction:column;gap:0.5rem;}
-  .philosophy-edit textarea{width:100%;background:var(--bg);border:1px solid var(--accent);border-radius:2px;color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:0.85rem;padding:0.75rem;line-height:1.7;resize:vertical;outline:none;min-height:130px;}
-  .philosophy-hint{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted2);}
-  .phil-btn-row{display:flex;gap:0.5rem;}
-  .btn-sm{background:var(--accent);color:var(--bg);border:none;border-radius:2px;padding:0.4rem 0.9rem;font-family:'Bebas Neue',sans-serif;font-size:0.9rem;letter-spacing:0.1em;cursor:pointer;}
-  .btn-sm.ghost{background:transparent;color:var(--muted2);border:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;}
-  .btn-sm.danger{background:var(--danger);color:#fff;}
+    .config-hint a {
+      color: var(--accent);
+      text-decoration: none;
+    }
 
-  /* PROGRESS */
-  .progress-ex-block{margin-bottom:0.75rem;}
-  .progress-ex-title{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:0.12em;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:0.35rem;margin-bottom:0.5rem;}
-  .recent-session-row{display:flex;align-items:flex-start;gap:0.75rem;padding:0.5rem 0;border-bottom:1px solid var(--border);}
-  .recent-session-row:last-child{border-bottom:none;}
-  .rs-date-col{display:flex;align-items:center;gap:0.4rem;min-width:90px;flex-shrink:0;}
-  .rs-date{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--muted2);white-space:nowrap;}
-  .rs-sets{display:flex;flex-wrap:wrap;gap:0.35rem;flex:1;padding-top:0.1rem;}
+    /* SHELL */
+    #app {
+      display: none;
+    }
 
-  /* PR */
-  .pr-ex-block{margin-bottom:0.75rem;}
-  .pr-ex-title{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:0.12em;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:0.35rem;margin-bottom:0.5rem;}
-  .pr-best{font-family:'IBM Plex Mono',monospace;font-size:0.78rem;color:var(--good);margin-bottom:0.5rem;}
-  .chart-wrap{position:relative;height:160px;}
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-  /* ALL WORKOUTS */
-  .all-session-block{margin-bottom:1.25rem;}
-  .all-session-hdr{display:flex;justify-content:space-between;align-items:center;background:var(--surface2);padding:0.5rem 0.75rem;border-radius:2px;margin-bottom:0.4rem;}
-  .all-session-left{display:flex;align-items:center;gap:0.6rem;}
-  .all-wnum{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted2);}
-  .all-session-date{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.1em;}
-  .all-phase{font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:var(--muted2);text-transform:uppercase;}
+    .logo {
+      font-size: 1.5rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: color 0.15s;
+      font-weight: bold;
+    }
 
-  /* LOG */
-  .log-label{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted2);text-transform:uppercase;letter-spacing:0.1em;display:block;margin-bottom:0.4rem;}
-  textarea.log-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:2px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:0.8rem;padding:0.75rem;line-height:1.6;resize:vertical;outline:none;transition:border-color 0.2s;min-height:220px;}
-  textarea.log-input:focus{border-color:var(--accent);}
-  .format-hint{background:var(--surface2);border:1px solid var(--border);border-radius:2px;padding:0.75rem;font-family:'IBM Plex Mono',monospace;font-size:0.7rem;color:var(--muted2);line-height:1.7;margin-bottom:0.75rem;}
-  .format-hint span{color:var(--accent);}
-  .btn{width:100%;background:var(--accent);color:var(--bg);border:none;border-radius:2px;padding:0.85rem;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:0.15em;cursor:pointer;transition:opacity 0.15s;margin-top:0.75rem;}
-  .btn:hover{opacity:0.85;}
-  .btn:disabled{opacity:0.4;cursor:not-allowed;}
-  .status-msg{font-family:'IBM Plex Mono',monospace;font-size:0.75rem;text-align:center;margin-top:0.75rem;min-height:1.2em;color:var(--muted2);}
-  .status-msg.ok{color:var(--good);}
-  .status-msg.err{color:var(--danger);}
+    .logo.flash {
+      color: var(--text);
+    }
 
-  /* FOOTNOTE */
-  .footnote{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--border);padding:0.45rem 1rem;font-family:'IBM Plex Mono',monospace;font-size:0.62rem;color:var(--muted2);text-align:center;z-index:200;}
-</style>
+    .header-meta {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: right;
+      line-height: 1.4;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    nav {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      position: sticky;
+      top: 60px;
+      z-index: 99;
+    }
+
+    nav button {
+      flex: 1;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 1rem 0.5rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-weight: bold;
+    }
+
+    nav button.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .panel {
+      display: none;
+      padding: 1.5rem 1rem 5rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    #panel-all {
+      display: none;
+      padding: 1.5rem 1rem 5rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    #panel-all.active {
+      display: block;
+    }
+
+    /* CARDS & TYPOGRAPHY */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .card-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.4rem;
+      font-weight: bold;
+    }
+
+    .card-value {
+      font-size: 1.8rem;
+      color: var(--text);
+      letter-spacing: 0.02em;
+      line-height: 1;
+      font-weight: bold;
+    }
+
+    .card-sub {
+      font-size: 0.8rem;
+      color: var(--muted2);
+      margin-top: 0.35rem;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--muted2);
+      font-size: 0.9rem;
+      padding: 3rem 1rem;
+      line-height: 1.8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .loading {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+      padding: 2rem;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 0.4
+      }
+
+      50% {
+        opacity: 1
+      }
+    }
+
+    /* SESSION DISPLAYS */
+    .session-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.75rem;
+    }
+
+    .session-date {
+      font-size: 1.2rem;
+      color: var(--text);
+      letter-spacing: 0.05em;
+      font-weight: bold;
+    }
+
+    .phase-badge {
+      font-size: 0.7rem;
+      background: var(--accent);
+      color: var(--surface);
+      padding: 0.25rem 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: bold;
+    }
+
+    .phase-badge.accessory {
+      background: var(--muted2);
+      color: var(--surface);
+    }
+
+    .phase-badge.strength {
+      background: var(--str);
+      color: var(--surface);
+    }
+
+    .phase-badge.peaking {
+      background: var(--pek);
+      color: var(--surface);
+    }
+
+    .phase-badge.run {
+      background: var(--text);
+      color: var(--surface);
+    }
+
+    .exercise-row {
+      border-top: 1px solid var(--border);
+      padding: 0.75rem 0;
+    }
+
+    .ex-name {
+      font-weight: bold;
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .sets-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .set-chip {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      font-size: 0.85rem;
+      padding: 0.25rem 0.5rem;
+      color: var(--text);
+    }
+
+    .set-num {
+      color: var(--muted2);
+      margin-right: 0.25rem;
+    }
+
+    .set-count {
+      color: var(--accent);
+      margin-right: 0.25rem;
+      font-weight: bold;
+    }
+
+    .run-metric-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .run-metric {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .run-metric-lbl {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: bold;
+    }
+
+    .run-metric-val {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: var(--text);
+    }
+
+    .run-intervals {
+      font-size: 0.9rem;
+      color: var(--muted);
+      border-left: 2px solid var(--accent);
+      padding-left: 0.75rem;
+      margin-top: 0.75rem;
+      white-space: pre-wrap;
+    }
+
+    .recency-latest {
+      font-size: 0.7rem;
+      color: var(--surface);
+      background: var(--accent);
+      padding: 0.15rem 0.4rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* TUBE MAP (CYCLE TRACKER) */
+    .cycle-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .cycle-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .cycle-label {
+      font-size: 0.8rem;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: bold;
+    }
+
+    .cycle-status {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: right;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .cycle-complete {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--accent);
+      padding: 1rem 0;
+      letter-spacing: 0.1em;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .tube-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 8px;
+    }
+
+    .tube-map {
+      display: flex;
+      align-items: center;
+      min-width: min-content;
+      padding: 0.5rem 0.1rem;
+    }
+
+    .t-phase {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .t-phase-lbl {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.75rem;
+      white-space: nowrap;
+      padding: 0.2rem 0.4rem;
+      font-weight: bold;
+    }
+
+    .t-track {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .t-line {
+      display: inline-block;
+      height: 2px;
+      flex-shrink: 0;
+      vertical-align: middle;
+    }
+
+    .t-dot-lg {
+      display: inline-block;
+      border-radius: 50%;
+      flex-shrink: 0;
+      vertical-align: middle;
+    }
+
+    .t-dot-lg-first {
+      display: inline-block;
+      border-radius: 50%;
+      flex-shrink: 0;
+      vertical-align: middle;
+    }
+
+    .t-dot-sm {
+      display: inline-block;
+      border-radius: 50%;
+      flex-shrink: 0;
+      vertical-align: middle;
+    }
+
+    .t-bridge {
+      display: inline-block;
+      height: 2px;
+      width: 16px;
+      flex-shrink: 0;
+      vertical-align: middle;
+      align-self: center;
+    }
+
+    /* PHILOSOPHY */
+    .philosophy-display {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 1.25rem;
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: var(--text);
+      white-space: pre-wrap;
+      min-height: 80px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .philosophy-display:hover {
+      border-color: var(--accent);
+    }
+
+    .philosophy-display.placeholder {
+      color: var(--muted2);
+      font-style: italic;
+    }
+
+    .philosophy-edit {
+      display: none;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .philosophy-edit textarea {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.95rem;
+      padding: 1rem;
+      line-height: 1.8;
+      resize: vertical;
+      outline: none;
+      min-height: 150px;
+    }
+
+    .philosophy-hint {
+      font-size: 0.75rem;
+      color: var(--muted2);
+    }
+
+    .phil-btn-row {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn-sm {
+      background: var(--text);
+      color: var(--surface);
+      border: none;
+      padding: 0.5rem 1rem;
+      font-family: inherit;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn-sm.ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    .btn-sm.danger {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    /* PROGRESS & RUNNING */
+    .progress-ex-block {
+      margin-bottom: 1.5rem;
+    }
+
+    .progress-ex-title {
+      font-size: 1.1rem;
+      letter-spacing: 0.1em;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .recent-session-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .recent-session-row:last-child {
+      border-bottom: none;
+    }
+
+    .rs-date-col {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 100px;
+      flex-shrink: 0;
+    }
+
+    .rs-date {
+      font-size: 0.85rem;
+      color: var(--muted);
+      white-space: nowrap;
+      font-weight: bold;
+    }
+
+    .rs-sets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      flex: 1;
+    }
+
+    /* PRs (Moved to Dashboard) */
+    .pr-ex-block {
+      margin-bottom: 1.5rem;
+    }
+
+    .pr-best {
+      font-size: 0.85rem;
+      color: var(--good);
+      margin-bottom: 0.75rem;
+      font-weight: bold;
+    }
+
+    .chart-wrap {
+      position: relative;
+      height: 180px;
+    }
+
+    /* ALL WORKOUTS */
+    .all-session-block {
+      margin-bottom: 1.5rem;
+    }
+
+    .all-session-hdr {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg);
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    .all-session-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .all-wnum {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-weight: bold;
+    }
+
+    .all-session-date {
+      font-size: 1.1rem;
+      letter-spacing: 0.05em;
+      font-weight: bold;
+    }
+
+    .all-phase {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    .all-session-body {
+      border: 1px solid var(--border);
+      border-top: none;
+      background: var(--surface);
+      padding: 1rem;
+    }
+
+    /* LOG */
+    .log-label {
+      font-size: 0.8rem;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+
+    textarea.log-input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.95rem;
+      padding: 1rem;
+      line-height: 1.6;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+      min-height: 250px;
+    }
+
+    textarea.log-input:focus {
+      border-color: var(--accent);
+    }
+
+    .format-hint {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 1rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+
+    .format-hint strong {
+      color: var(--text);
+    }
+
+    .format-hint span {
+      color: var(--accent);
+    }
+
+    .btn {
+      width: 100%;
+      background: var(--accent);
+      color: var(--surface);
+      border: none;
+      padding: 1rem;
+      font-family: inherit;
+      font-size: 1.1rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+
+    .btn:hover {
+      opacity: 0.85;
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .status-msg {
+      font-size: 0.85rem;
+      text-align: center;
+      margin-top: 1rem;
+      min-height: 1.2em;
+      color: var(--muted);
+      font-weight: bold;
+    }
+
+    .status-msg.ok {
+      color: var(--good);
+    }
+
+    .status-msg.err {
+      color: var(--danger);
+    }
+
+    /* FOOTNOTE */
+    .footnote {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 0.6rem 1rem;
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: center;
+      z-index: 200;
+      letter-spacing: 0.05em;
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- CONFIG -->
-<div id="config-screen">
-  <div class="config-title">PERIODIZE</div>
-  <div class="config-sub">workout tracking / periodization</div>
-  <div class="config-card">
-    <div><label>GitHub Username</label><input id="cfg-user" type="text" placeholder="your-username" autocomplete="off" autocorrect="off" autocapitalize="off"></div>
-    <div><label>Repository Name</label><input id="cfg-repo" type="text" placeholder="periodize" autocomplete="off" autocorrect="off" autocapitalize="off"></div>
-    <div>
-      <label>Personal Access Token</label>
-      <input id="cfg-token" type="password" placeholder="ghp_xxxxxxxxxxxx">
-      <div class="config-hint" style="margin-top:0.5rem">Stored only in your browser. Generate at <a href="https://github.com/settings/tokens/new" target="_blank">GitHub → Settings → Tokens</a> with <strong>repo</strong> scope.</div>
-    </div>
-    <button class="btn" onclick="saveConfig()">Save & Enter</button>
-  </div>
-</div>
-
-<!-- APP -->
-<div id="app">
-  <header>
-    <div class="logo" id="logo" onclick="handleLogoTap()">PERIODIZE</div>
-    <div class="header-meta" id="header-meta"></div>
-  </header>
-  <nav>
-    <button class="active" onclick="switchTab('dashboard',this)">Dashboard</button>
-    <button onclick="switchTab('progress',this)">Progress</button>
-    <button onclick="switchTab('prs',this)">PRs</button>
-    <button onclick="switchTab('log',this)">+ Log</button>
-  </nav>
-
-  <div id="panel-dashboard" class="panel active"><div id="dash-content"><div class="loading">loading workouts...</div></div></div>
-  <div id="panel-progress" class="panel"><div id="progress-content"><div class="loading">loading...</div></div></div>
-  <div id="panel-prs" class="panel"><div id="prs-content"><div class="loading">loading...</div></div></div>
-
-  <div id="panel-log" class="panel">
-    <div class="section-title">Log Workout</div>
-    <div class="format-hint">
-      <span>date | week | phase | notes</span><br>
-      phase: <span>accumulation</span> · <span>strength</span> · <span>peaking</span> · <span>accessory</span><br>
-      ExerciseName: <span>weightxreps</span>, ...<br><br>
-      2026-03-24 | 1 | accumulation | Felt strong<br>
-      Squat: 100x5, 100x5, 102.5x5<br>
-      Bench: 80x5, 82.5x5
-    </div>
-    <label class="log-label">Shorthand Entry</label>
-    <textarea class="log-input" id="log-input" placeholder="Type your workout here..."></textarea>
-    <button class="btn" id="submit-btn" onclick="submitLog()">Commit to GitHub</button>
-    <div class="status-msg" id="log-status"></div>
-
-    <div style="margin-top:2rem;border-top:1px solid var(--border);padding-top:1.25rem;">
-      <div class="section-title">Reprocess All Logs</div>
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--muted2);line-height:1.6;margin-bottom:0.75rem">
-        Triggers the GitHub Action to reparse every raw .txt file from scratch — useful after changing the parser. Overwrites all existing JSON.
+  <!-- CONFIG -->
+  <div id="config-screen">
+    <div class="config-title">SPARTAN</div>
+    <div class="config-sub">DISCIPLINE · FOCUS · PROGRESS</div>
+    <div class="config-card">
+      <div><label>GitHub Username</label><input id="cfg-user" type="text" placeholder="username" autocomplete="off"
+          autocorrect="off" autocapitalize="off"></div>
+      <div><label>Repository Name</label><input id="cfg-repo" type="text" placeholder="spartan-logs" autocomplete="off"
+          autocorrect="off" autocapitalize="off"></div>
+      <div>
+        <label>Personal Access Token</label>
+        <input id="cfg-token" type="password" placeholder="ghp_xxxxxxxxxxxx">
+        <div class="config-hint" style="margin-top:0.75rem">Stored locally. Requires <a
+            href="https://github.com/settings/tokens/new" target="_blank">repo scope</a>.</div>
       </div>
-      <button class="btn-sm danger" onclick="triggerReprocess()">Reprocess All Raw Files</button>
-      <div class="status-msg" id="reprocess-status"></div>
+      <button class="btn" onclick="saveConfig()">Enter</button>
     </div>
   </div>
 
-  <div id="panel-all">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
-      <div class="section-title" style="margin:0">All Workouts</div>
-      <button class="btn-sm ghost" onclick="closeAll()">← Back</button>
+  <!-- APP -->
+  <div id="app">
+    <header>
+      <div class="logo" id="logo" onclick="handleLogoTap()">SPARTAN</div>
+      <div class="header-meta" id="header-meta"></div>
+    </header>
+    <nav>
+      <button class="active" onclick="switchTab('dashboard',this)">Dashboard</button>
+      <button onclick="switchTab('progress',this)">Progress</button>
+      <button onclick="switchTab('running',this)">Running</button>
+      <button onclick="switchTab('log',this)">+ Log</button>
+    </nav>
+
+    <div id="panel-dashboard" class="panel active">
+      <div id="dash-content">
+        <div class="loading">Fetching archives...</div>
+      </div>
+
+      <div id="cycle-container"></div>
+
+      <div class="section-title" style="margin-top:1rem;">Training Philosophy</div>
+      <div class="philosophy-display placeholder" id="phil-display" onclick="openPhilosophy()">Define your principles...
+      </div>
+      <div class="philosophy-edit" id="phil-edit">
+        <textarea id="phil-textarea" placeholder="State your intent, methodology, and objectives..."></textarea>
+        <div class="philosophy-hint">Persisted securely to philosophy.txt</div>
+        <div class="phil-btn-row">
+          <button class="btn-sm" onclick="savePhilosophy()">Save</button>
+          <button class="btn-sm ghost" onclick="cancelPhilosophy()">Cancel</button>
+        </div>
+      </div>
+
+      <div id="prs-container" style="margin-top:3rem;"></div>
     </div>
-    <div id="all-content"></div>
+
+    <div id="panel-progress" class="panel">
+      <div id="progress-content">
+        <div class="loading">Fetching data...</div>
+      </div>
+    </div>
+    <div id="panel-running" class="panel">
+      <div id="running-content">
+        <div class="loading">Fetching data...</div>
+      </div>
+    </div>
+
+    <div id="panel-log" class="panel">
+      <div class="section-title">Record Session</div>
+
+      <div class="format-hint">
+        <strong>STRENGTH SHORTHAND</strong><br>
+        <span>YYYY-MM-DD | week_num | phase | notes</span><br>
+        Exercise: <span>weightxreps, weightxreps</span><br>
+        <br>
+        <strong>ENDURANCE SHORTHAND</strong><br>
+        <span>YYYY-MM-DD | run | type | notes</span><br>
+        <span>distance | time | pace | hr</span><br>
+        Intervals: <span>(Optional details on subsequent lines)</span>
+      </div>
+
+      <label class="log-label">Entry Document</label>
+      <textarea class="log-input" id="log-input" placeholder="Initiate log..."></textarea>
+      <button class="btn" id="submit-btn" onclick="submitLog()">Commit Record</button>
+      <div class="status-msg" id="log-status"></div>
+
+      <div style="margin-top:3rem;border-top:1px solid var(--border);padding-top:1.5rem;">
+        <div class="section-title">System Reset</div>
+        <div style="font-size:0.85rem;color:var(--muted);line-height:1.6;margin-bottom:1rem">
+          Trigger a complete re-parse of all raw text files. Overwrites existing JSON architecture.
+        </div>
+        <button class="btn-sm danger" onclick="triggerReprocess()">Reprocess Archives</button>
+        <div class="status-msg" id="reprocess-status"></div>
+      </div>
+    </div>
+
+    <div id="panel-all">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+        <div class="section-title" style="margin:0; border:none;">Comprehensive Archive</div>
+        <button class="btn-sm ghost" onclick="closeAll()">Return</button>
+      </div>
+      <div id="all-content"></div>
+    </div>
+
+    <div class="footnote">Double-tap SPARTAN logo to access the comprehensive archive.</div>
   </div>
 
-  <div class="footnote">Double-tap PERIODIZE to view all workouts</div>
-</div>
-
-<script>
-// ── CONFIG ────────────────────────────────────────────────
-let CFG={};
-function saveConfig(){
-  const u=document.getElementById('cfg-user').value.trim(),r=document.getElementById('cfg-repo').value.trim(),t=document.getElementById('cfg-token').value.trim();
-  if(!u||!r||!t){alert('Please fill in all fields.');return;}
-  CFG={user:u,repo:r,token:t};localStorage.setItem('periodize_cfg',JSON.stringify(CFG));enterApp();
-}
-function loadConfig(){try{const s=localStorage.getItem('periodize_cfg');if(s){CFG=JSON.parse(s);if(CFG.user&&CFG.repo&&CFG.token)enterApp();}}catch(e){}}
-function enterApp(){document.getElementById('config-screen').style.display='none';document.getElementById('app').style.display='block';loadAllWorkouts();}
-
-// ── GITHUB ────────────────────────────────────────────────
-const API=()=>`https://api.github.com/repos/${CFG.user}/${CFG.repo}`;
-const HDR=()=>({'Authorization':`token ${CFG.token}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'});
-function b64d(s){return decodeURIComponent(escape(atob(s.replace(/\n/g,''))));}
-async function ghGet(path){const r=await fetch(`${API()}/contents/${path}`,{headers:HDR()});if(!r.ok)throw new Error(r.status);return r.json();}
-async function ghPut(path,msg,content,sha){
-  const body={message:msg,content:btoa(unescape(encodeURIComponent(content))),...(sha?{sha}:{})};
-  const r=await fetch(`${API()}/contents/${path}`,{method:'PUT',headers:HDR(),body:JSON.stringify(body)});
-  if(!r.ok)throw new Error((await r.json()).message||'API error');
-  return r.json();
-}
-
-// ── DATA ──────────────────────────────────────────────────
-let ALL_WORKOUTS=[];
-let prCharts=[];
-
-async function loadAllWorkouts(){
-  try{
-    let files=[];
-    try{const f=await ghGet('logs/json');files=Array.isArray(f)?f.filter(x=>x.name.endsWith('.json')):[];}catch(e){}
-    const ws=await Promise.all(files.map(async f=>{const d=await ghGet(`logs/json/${f.name}`);return JSON.parse(b64d(d.content));}));
-    ALL_WORKOUTS=ws.sort((a,b)=>a.date.localeCompare(b.date));
-    updateHeaderMeta();
-    renderDashboard();
-    renderProgress();
-    renderPRs();
-    renderAllWorkouts();
-    loadPhilosophy();
-  }catch(e){
-    document.getElementById('dash-content').innerHTML=`<div class="empty-state">Could not load workouts.<br>Check your GitHub config.</div>`;
-  }
-}
-
-function updateHeaderMeta(){
-  if(!ALL_WORKOUTS.length)return;
-  const last=ALL_WORKOUTS[ALL_WORKOUTS.length-1];
-  document.getElementById('header-meta').innerHTML=`Week ${last.week}<br>${last.phase}`;
-}
-
-// ── HELPERS ───────────────────────────────────────────────
-function badgeClass(p){
-  const k=(p||'').toLowerCase();
-  if(k==='accessory')return'phase-badge accessory';
-  if(k==='strength')return'phase-badge strength';
-  if(k==='peaking')return'phase-badge peaking';
-  return'phase-badge';
-}
-
-// Render set chips — supports both old format {weight_kg,reps} and new {weight_kg,reps,count}
-function chips(sets){
-  return sets.map((s,i)=>{
-    const kg=`${s.weight_kg}kg`;
-    const rep=`×${s.reps}`;
-    const countPfx=s.count&&s.count>1?`<span class="set-count">${s.count}×</span>`:`<span class="set-num">${i+1}.</span>`;
-    return`<span class="set-chip">${countPfx}${kg}${rep}</span>`;
-  }).join('');
-}
-
-function workoutNum(w){return ALL_WORKOUTS.indexOf(w)+1;}
-
-function totalVolume(){
-  return ALL_WORKOUTS.reduce((t,w)=>t+w.exercises.reduce((et,ex)=>et+ex.sets.reduce((st,s)=>st+(s.weight_kg*s.reps*(s.count||1)),0),0),0);
-}
-function weeklyVolume(weekNum){
-  return ALL_WORKOUTS.filter(w=>w.week===weekNum).reduce((t,w)=>t+w.exercises.reduce((et,ex)=>et+ex.sets.reduce((st,s)=>st+(s.weight_kg*s.reps*(s.count||1)),0),0),0);
-}
-
-// ── TUBE MAP ──────────────────────────────────────────────
-/*
-  13 stations per phase. Milestones at indices 0,4,8,12.
-  Smalls at 1,2,3 | 5,6,7 | 9,10,11.
-  Station i is lit when count >= i+1  (needs i+1 workouts).
-  So station 0 (first milestone) lights with workout #1.
-  Station 12 (last milestone) lights with workout #13.
-  Phase complete after 13 workouts.
-*/
-const STATIONS=13;
-const MILESTONES=new Set([0,4,8,12]);
-
-function phaseColor(key){
-  if(key==='accumulation')return'var(--acc)';
-  if(key==='strength')return'var(--str)';
-  if(key==='peaking')return'var(--pek)';
-  return'var(--muted2)';
-}
-
-function renderCycleHTML(){
-  const phaseDefs=[
-    {key:'accumulation',label:'Accumulation'},
-    {key:'strength',    label:'Strength'},
-    {key:'peaking',     label:'Peaking'},
-  ];
-
-  const counts={accumulation:0,strength:0,peaking:0};
-  ALL_WORKOUTS.forEach(w=>{
-    const k=(w.phase||'').toLowerCase();
-    if(counts[k]!==undefined)counts[k]++;
-  });
-
-  const phases=phaseDefs.map(pd=>({...pd,count:counts[pd.key],color:phaseColor(pd.key)}));
-  const allComplete=phases.every(p=>p.count>=STATIONS);
-
-  if(allComplete){
-    return`<div class="cycle-wrap">
-      <div class="cycle-top"><span class="cycle-label">Training Cycle</span></div>
-      <div class="cycle-complete">🏁 Cycle complete — rest, reflect, reset</div>
-    </div>`;
-  }
-
-  // status text — find active phase
-  let statusText='';
-  for(const ph of phases){
-    if(ph.count<STATIONS){
-      const week=Math.floor(ph.count/3)+1;
-      const withinWeek=ph.count%3;
-      const remaining=3-withinWeek;
-      statusText=`${ph.label} W${Math.min(week,4)} · ${remaining} to next`;
-      break;
+  <script>
+    // ── CONFIG ────────────────────────────────────────────────
+    let CFG = {};
+    function saveConfig() {
+      const u = document.getElementById('cfg-user').value.trim(), r = document.getElementById('cfg-repo').value.trim(), t = document.getElementById('cfg-token').value.trim();
+      if (!u || !r || !t) { alert('Incomplete configuration.'); return; }
+      CFG = { user: u, repo: r, token: t }; localStorage.setItem('spartan_cfg', JSON.stringify(CFG)); enterApp();
     }
-  }
+    function loadConfig() { try { const s = localStorage.getItem('spartan_cfg'); if (s) { CFG = JSON.parse(s); if (CFG.user && CFG.repo && CFG.token) enterApp(); } } catch (e) { } }
+    function enterApp() { document.getElementById('config-screen').style.display = 'none'; document.getElementById('app').style.display = 'block'; loadAllWorkouts(); }
 
-  let html=`<div class="cycle-wrap">
+    // ── GITHUB ────────────────────────────────────────────────
+    const API = () => `https://api.github.com/repos/${CFG.user}/${CFG.repo}`;
+    const HDR = () => ({ 'Authorization': `token ${CFG.token}`, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' });
+    function b64d(s) { return decodeURIComponent(escape(atob(s.replace(/\n/g, '')))); }
+    async function ghGet(path) { const r = await fetch(`${API()}/contents/${path}`, { headers: HDR() }); if (!r.ok) throw new Error(r.status); return r.json(); }
+    async function ghPut(path, msg, content, sha) {
+      const body = { message: msg, content: btoa(unescape(encodeURIComponent(content))), ...(sha ? { sha } : {}) };
+      const r = await fetch(`${API()}/contents/${path}`, { method: 'PUT', headers: HDR(), body: JSON.stringify(body) });
+      if (!r.ok) throw new Error((await r.json()).message || 'API error');
+      return r.json();
+    }
+
+    // ── DATA ──────────────────────────────────────────────────
+    let ALL_WORKOUTS = [];
+    let WEIGHT_WORKOUTS = [];
+    let RUN_WORKOUTS = [];
+    let prCharts = [];
+
+    async function loadAllWorkouts() {
+      try {
+        let files = [];
+        try { const f = await ghGet('logs/json'); files = Array.isArray(f) ? f.filter(x => x.name.endsWith('.json')) : []; } catch (e) { }
+        const ws = await Promise.all(files.map(async f => { const d = await ghGet(`logs/json/${f.name}`); return JSON.parse(b64d(d.content)); }));
+
+        ALL_WORKOUTS = ws.sort((a, b) => a.date.localeCompare(b.date));
+        WEIGHT_WORKOUTS = ALL_WORKOUTS.filter(w => w.type !== 'run');
+        RUN_WORKOUTS = ALL_WORKOUTS.filter(w => w.type === 'run');
+
+        updateHeaderMeta();
+        renderDashboard();
+        renderCycleHTML();
+        renderPRs();
+        renderProgress();
+        renderRunning();
+        renderAllWorkouts();
+        loadPhilosophy();
+      } catch (e) {
+        document.getElementById('dash-content').innerHTML = `<div class="empty-state">Archive inaccessible.<br>Verify GitHub configuration.</div>`;
+      }
+    }
+
+    function updateHeaderMeta() {
+      if (!WEIGHT_WORKOUTS.length) return;
+      const last = WEIGHT_WORKOUTS[WEIGHT_WORKOUTS.length - 1];
+      document.getElementById('header-meta').innerHTML = `Week ${last.week}<br>${last.phase}`;
+    }
+
+    // ── HELPERS ───────────────────────────────────────────────
+    function badgeClass(p) {
+      const k = (p || '').toLowerCase();
+      if (k === 'accessory') return 'phase-badge accessory';
+      if (k === 'strength') return 'phase-badge strength';
+      if (k === 'peaking') return 'phase-badge peaking';
+      if (k === 'run' || k === 'interval' || k === 'recovery') return 'phase-badge run';
+      return 'phase-badge';
+    }
+
+    function chips(sets) {
+      return sets.map((s, i) => {
+        const kg = `${s.weight_kg}kg`;
+        const rep = `×${s.reps}`;
+        const countPfx = s.count && s.count > 1 ? `<span class="set-count">${s.count}×</span>` : `<span class="set-num">${i + 1}.</span>`;
+        return `<span class="set-chip">${countPfx}${kg}${rep}</span>`;
+      }).join('');
+    }
+
+    function weightWorkoutNum(w) { return WEIGHT_WORKOUTS.indexOf(w) + 1; }
+
+    function totalVolume() {
+      return WEIGHT_WORKOUTS.reduce((t, w) => t + w.exercises.reduce((et, ex) => et + ex.sets.reduce((st, s) => st + (s.weight_kg * s.reps * (s.count || 1)), 0), 0), 0);
+    }
+    function weeklyVolume(weekNum) {
+      return WEIGHT_WORKOUTS.filter(w => w.week === weekNum).reduce((t, w) => t + w.exercises.reduce((et, ex) => et + ex.sets.reduce((st, s) => st + (s.weight_kg * s.reps * (s.count || 1)), 0), 0), 0);
+    }
+
+    function extractMiles(distStr) {
+      if (!distStr) return 0;
+      const match = distStr.match(/[\d.]+/);
+      return match ? parseFloat(match[0]) : 0;
+    }
+    function totalMiles() {
+      return RUN_WORKOUTS.reduce((t, r) => t + extractMiles(r.distance), 0);
+    }
+    function weeklyMiles(currentDateStr) {
+      if (!currentDateStr) return 0;
+      // Approximating "week" by last 7 days for running, since runs aren't tied to "week_num" 
+      const targetDate = new Date(currentDateStr).getTime();
+      const weekStart = targetDate - (7 * 24 * 60 * 60 * 1000);
+
+      return RUN_WORKOUTS.filter(r => {
+        const d = new Date(r.date).getTime();
+        return d > weekStart && d <= targetDate;
+      }).reduce((t, r) => t + extractMiles(r.distance), 0);
+    }
+
+    // ── DASHBOARD ─────────────────────────────────────────────
+    function renderDashboard() {
+      let html = '';
+
+      // --- STRENGTH SECTION ---
+      html += `<div class="section-title">Strength</div>`;
+      if (!WEIGHT_WORKOUTS.length) {
+        html += `<div class="empty-state">No strength data archived.</div>`;
+      } else {
+        const lastW = WEIGHT_WORKOUTS[WEIGHT_WORKOUTS.length - 1];
+        const wNum = weightWorkoutNum(lastW);
+        const weekVol = Math.round(weeklyVolume(lastW.week));
+        const allVol = Math.round(totalVolume());
+        const thisWeekSessions = WEIGHT_WORKOUTS.filter(w => w.week === lastW.week).length;
+
+        const exHTML = lastW.exercises.map(ex => `
+      <div class="exercise-row">
+        <div class="ex-name">${ex.name}</div>
+        <div class="sets-row">${chips(ex.sets)}</div>
+      </div>`).join('');
+
+        html += `
+      <div class="card">
+        <div class="session-header">
+          <div class="session-date">${lastW.date}</div>
+          <div class="${badgeClass(lastW.phase)}">${lastW.phase}</div>
+        </div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-bottom:1rem;display:flex;align-items:center;gap:0.75rem; font-weight:bold;">
+          <span>Session #${wNum}</span>
+          <span class="recency-latest">Latest</span>
+        </div>
+        ${exHTML}
+        ${lastW.notes ? `<div class="card-sub" style="margin-top:1rem;border-top:1px solid var(--border);padding-top:0.75rem">${lastW.notes}</div>` : ''}
+      </div>
+
+      <div class="stat-grid">
+        <div class="card" style="margin-bottom:0;"><div class="card-label">Sessions This Week</div><div class="card-value">${thisWeekSessions}</div><div class="card-sub">Week ${lastW.week}</div></div>
+        <div class="card" style="margin-bottom:0;"><div class="card-label">Volume This Week</div><div class="card-value">${weekVol.toLocaleString()}</div><div class="card-sub">kg</div></div>
+        <div class="card" style="margin-bottom:0;"><div class="card-label">Total Sessions</div><div class="card-value">${wNum}</div><div class="card-sub">All-time</div></div>
+        <div class="card" style="margin-bottom:0;"><div class="card-label">Total Volume</div><div class="card-value">${allVol.toLocaleString()}</div><div class="card-sub">kg All-time</div></div>
+      </div>`;
+      }
+
+      // --- ENDURANCE SECTION ---
+      html += `<div class="section-title" style="margin-top:2.5rem;">Endurance</div>`;
+      if (!RUN_WORKOUTS.length) {
+        html += `<div class="empty-state">No endurance data archived.</div>`;
+      } else {
+        const lastR = RUN_WORKOUTS[RUN_WORKOUTS.length - 1];
+        const allMi = totalMiles().toFixed(1);
+        const weekMi = weeklyMiles(lastR.date).toFixed(1);
+
+        let intervalsHtml = '';
+        if (lastR.intervals && lastR.intervals.length > 0) {
+          intervalsHtml = `<div class="run-intervals">${lastR.intervals.join('\n')}</div>`;
+        }
+
+        html += `
+      <div class="card">
+        <div class="session-header">
+          <div class="session-date">${lastR.date}</div>
+          <div class="${badgeClass(lastR.run_type || 'run')}">${lastR.run_type || 'RUN'}</div>
+        </div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-bottom:1rem;display:flex;align-items:center;gap:0.75rem; font-weight:bold;">
+          <span class="recency-latest">Latest Run</span>
+        </div>
+        
+        <div class="run-metric-row">
+            ${lastR.distance ? `<div class="run-metric"><span class="run-metric-lbl">Distance</span><span class="run-metric-val">${lastR.distance}</span></div>` : ''}
+            ${lastR.time ? `<div class="run-metric"><span class="run-metric-lbl">Time</span><span class="run-metric-val">${lastR.time}</span></div>` : ''}
+            ${lastR.pace ? `<div class="run-metric"><span class="run-metric-lbl">Pace</span><span class="run-metric-val">${lastR.pace}</span></div>` : ''}
+            ${lastR.hr ? `<div class="run-metric"><span class="run-metric-lbl">Avg HR</span><span class="run-metric-val">${lastR.hr}</span></div>` : ''}
+        </div>
+        ${intervalsHtml}
+        ${lastR.notes ? `<div class="card-sub" style="margin-top:1rem;border-top:1px solid var(--border);padding-top:0.75rem">${lastR.notes}</div>` : ''}
+      </div>
+
+      <div class="stat-grid">
+        <div class="card" style="margin-bottom:0;"><div class="card-label">Miles Last 7 Days</div><div class="card-value">${weekMi}</div><div class="card-sub">mi</div></div>
+        <div class="card" style="margin-bottom:0;"><div class="card-label">Total Distance</div><div class="card-value">${allMi}</div><div class="card-sub">mi All-time</div></div>
+      </div>`;
+      }
+
+      document.getElementById('dash-content').innerHTML = html;
+    }
+
+    // ── TUBE MAP (CYCLE TRACKER - STRENGTH ONLY) ──────────────
+    const STATIONS = 13;
+    const MILESTONES = new Set([0, 4, 8, 12]);
+
+    function phaseColor(key) {
+      if (key === 'accumulation') return 'var(--acc)';
+      if (key === 'strength') return 'var(--str)';
+      if (key === 'peaking') return 'var(--pek)';
+      return 'var(--muted2)';
+    }
+
+    function renderCycleHTML() {
+      if (!WEIGHT_WORKOUTS.length) {
+        document.getElementById('cycle-container').innerHTML = '';
+        return;
+      }
+
+      const phaseDefs = [
+        { key: 'accumulation', label: 'Accumulation' },
+        { key: 'strength', label: 'Strength' },
+        { key: 'peaking', label: 'Peaking' },
+      ];
+
+      const counts = { accumulation: 0, strength: 0, peaking: 0 };
+      WEIGHT_WORKOUTS.forEach(w => {
+        const k = (w.phase || '').toLowerCase();
+        if (counts[k] !== undefined) counts[k]++;
+      });
+
+      const phases = phaseDefs.map(pd => ({ ...pd, count: counts[pd.key], color: phaseColor(pd.key) }));
+      const allComplete = phases.every(p => p.count >= STATIONS);
+
+      let html = `<div class="section-title" style="margin-top:2.5rem;">Training Cycle</div>`;
+
+      if (allComplete) {
+        html += `<div class="cycle-wrap">
+      <div class="cycle-complete">🏁 Cycle Complete. Rest, Reflect, Reset.</div>
+    </div>`;
+        document.getElementById('cycle-container').innerHTML = html;
+        return;
+      }
+
+      let statusText = '';
+      for (const ph of phases) {
+        if (ph.count < STATIONS) {
+          const week = Math.floor(ph.count / 3) + 1;
+          const withinWeek = ph.count % 3;
+          const remaining = 3 - withinWeek;
+          statusText = `${ph.label} W${Math.min(week, 4)} · ${remaining} to next`;
+          break;
+        }
+      }
+
+      html += `<div class="cycle-wrap">
     <div class="cycle-top">
-      <span class="cycle-label">Training Cycle</span>
+      <span class="cycle-label">Progress</span>
       <span class="cycle-status">${statusText}</span>
     </div>
     <div class="tube-scroll"><div class="tube-map">`;
 
-  phases.forEach((ph,pi)=>{
-    const col=ph.color;
-    const count=ph.count;
-    const started=count>0;
+      phases.forEach((ph, pi) => {
+        const col = ph.color;
+        const count = ph.count;
+        const started = count > 0;
 
-    // Phase label — highlight if started/active, normal if not started
-    const lblBg=started?col:'transparent';
-    const lblColor=started?'var(--bg)':'var(--muted2)';
-    const lblStyle=started
-      ?`background:${lblBg};color:${lblColor};`
-      :`color:${lblColor};`;
+        const lblBg = started ? col : 'transparent';
+        const lblColor = started ? 'var(--surface)' : 'var(--muted2)';
+        const lblStyle = started
+          ? `background:${lblBg};color:${lblColor};`
+          : `color:${lblColor};`;
 
-    html+=`<div class="t-phase">
+        html += `<div class="t-phase">
       <div class="t-phase-lbl" style="${lblStyle}">${ph.label}</div>
       <div class="t-track">`;
 
-    for(let i=0;i<STATIONS;i++){
-      const isLit=count>=i+1;
-      const isMilestone=MILESTONES.has(i);
-      const isFirst=i===0;
+        for (let i = 0; i < STATIONS; i++) {
+          const isLit = count >= i + 1;
+          const isMilestone = MILESTONES.has(i);
+          const isFirst = i === 0;
 
-      // connecting line before every station except the very first
-      if(i>0){
-        const lineW=isMilestone?9:7;
-        const lineBg=isLit?col:'var(--border)';
-        html+=`<div class="t-line" style="width:${lineW}px;background:${lineBg}"></div>`;
-      }
+          if (i > 0) {
+            const lineW = isMilestone ? 9 : 7;
+            const lineBg = isLit ? col : 'var(--border)';
+            html += `<div class="t-line" style="width:${lineW}px;background:${lineBg}"></div>`;
+          }
 
-      if(isMilestone){
-        const size=isFirst?24:20;
-        const opacity=isLit?1:0.3;
-        const bg=isLit?col:col; // always phase colour, just opacity changes
-        html+=`<div class="t-dot-lg${isFirst?'-first':''}" style="width:${size}px;height:${size}px;background:${bg};opacity:${opacity}"></div>`;
-      } else {
-        const opacity=isLit?1:0.18;
-        html+=`<div class="t-dot-sm" style="width:9px;height:9px;background:${col};opacity:${opacity}"></div>`;
-      }
+          if (isMilestone) {
+            const size = isFirst ? 24 : 20;
+            const opacity = isLit ? 1 : 0.3;
+            html += `<div class="t-dot-lg${isFirst ? '-first' : ''}" style="width:${size}px;height:${size}px;background:${col};opacity:${opacity}"></div>`;
+          } else {
+            const opacity = isLit ? 1 : 0.18;
+            html += `<div class="t-dot-sm" style="width:9px;height:9px;background:${col};opacity:${opacity}"></div>`;
+          }
+        }
+
+        html += `</div></div>`;
+
+        if (pi < phases.length - 1) {
+          const bridgeDone = ph.count >= STATIONS;
+          html += `<div class="t-bridge" style="background:${bridgeDone ? 'var(--muted2)' : 'var(--border)'}"></div>`;
+        }
+      });
+
+      html += `</div></div></div>`;
+      document.getElementById('cycle-container').innerHTML = html;
     }
 
-    html+=`</div></div>`;
-
-    if(pi<phases.length-1){
-      const bridgeDone=ph.count>=STATIONS;
-      html+=`<div class="t-bridge" style="background:${bridgeDone?'var(--muted2)':'var(--border)'}"></div>`;
+    // ── PHILOSOPHY ────────────────────────────────────────────
+    let philSHA = null;
+    async function loadPhilosophy() {
+      try { const d = await ghGet('philosophy.txt'); philSHA = d.sha; setPhilDisplay(b64d(d.content)); } catch (e) { }
     }
-  });
-
-  html+=`</div></div></div>`;
-  return html;
-}
-
-// ── HEATMAP ───────────────────────────────────────────────
-function renderHeatmapHTML(){
-  if(!ALL_WORKOUTS.length)return'';
-
-  // Build date → count map
-  const dateCounts={};
-  ALL_WORKOUTS.forEach(w=>{dateCounts[w.date]=(dateCounts[w.date]||0)+1;});
-
-  // Determine range: from first workout to today
-  const today=new Date();
-  today.setHours(0,0,0,0);
-  const firstDate=new Date(ALL_WORKOUTS[0].date);
-  firstDate.setHours(0,0,0,0);
-
-  // Go back to the Sunday before firstDate to align grid
-  const startDate=new Date(firstDate);
-  startDate.setDate(startDate.getDate()-startDate.getDay());
-
-  // Build weeks (columns), each column = 7 days (Sun-Sat)
-  const weeks=[];
-  let cur=new Date(startDate);
-  while(cur<=today){
-    const week=[];
-    for(let d=0;d<7;d++){
-      week.push(new Date(cur));
-      cur.setDate(cur.getDate()+1);
+    function setPhilDisplay(text) {
+      const el = document.getElementById('phil-display'); if (!el) return;
+      if (text && text.trim()) { el.textContent = text; el.classList.remove('placeholder'); }
+      else { el.textContent = 'State your intent, methodology, and objectives...'; el.classList.add('placeholder'); }
     }
-    weeks.push(week);
-  }
+    function openPhilosophy() {
+      const d = document.getElementById('phil-display'), e = document.getElementById('phil-edit'), ta = document.getElementById('phil-textarea');
+      if (!d.classList.contains('placeholder')) ta.value = d.textContent;
+      d.style.display = 'none'; e.style.display = 'flex'; ta.focus();
+    }
+    function cancelPhilosophy() { document.getElementById('phil-display').style.display = 'block'; document.getElementById('phil-edit').style.display = 'none'; }
+    async function savePhilosophy() {
+      const text = document.getElementById('phil-textarea').value;
+      try { const r = await ghPut('philosophy.txt', 'update: training philosophy', text, philSHA); philSHA = r.content.sha; setPhilDisplay(text); cancelPhilosophy(); }
+      catch (e) { alert('Could not save: ' + e.message); }
+    }
 
-  // Month labels row
-  let monthLabels='<div class="heatmap-month-row"><div style="width:18px;flex-shrink:0"></div>';
-  let lastMonth=-1;
-  weeks.forEach(week=>{
-    const firstOfWeek=week[0];
-    const mo=firstOfWeek.getMonth();
-    const label=(mo!==lastMonth)?['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][mo]:'';
-    if(mo!==lastMonth)lastMonth=mo;
-    monthLabels+=`<div class="heatmap-month-lbl" style="width:11px">${label}</div>`;
-    monthLabels+=`<div style="width:3px;flex-shrink:0"></div>`;
-  });
-  monthLabels+='</div>';
-
-  // Day labels (Mon, Wed, Fri)
-  const dayLabels=['S','M','T','W','T','F','S'];
-  let dayCol='<div class="heatmap-day-labels">';
-  dayLabels.forEach((d,i)=>{
-    dayCol+=`<div class="heatmap-day-lbl">${i%2===1?d:''}</div>`;
-  });
-  dayCol+='</div>';
-
-  // Grid
-  let grid='<div class="heatmap-grid">';
-  weeks.forEach(week=>{
-    grid+='<div class="heatmap-col">';
-    week.forEach(day=>{
-      const iso=day.toISOString().slice(0,10);
-      const count=dateCounts[iso]||0;
-      const isFuture=day>today;
-      const isBeforeFirst=day<firstDate;
-      let bg,opacity;
-      if(isFuture||isBeforeFirst){
-        bg='var(--border)';opacity=0.4;
-      } else if(count===0){
-        bg='var(--surface2)';opacity=1;
-      } else {
-        // Yellow accent, brightness scales with count (1=dim, 2+=bright)
-        const brightness=Math.min(count,3);
-        const opacities=[0,0.35,0.65,1];
-        bg='var(--accent)';opacity=opacities[brightness];
-      }
-      const title=`${iso}${count?' ('+count+' session'+(count>1?'s':'')+')':''}`;
-      grid+=`<div class="heatmap-cell" style="background:${bg};opacity:${opacity}" title="${title}"></div>`;
-    });
-    grid+='</div>';
-  });
-  grid+='</div>';
-
-  return`<div class="section-title" style="margin-top:0.25rem">Activity</div>
-    <div class="card">
-      ${monthLabels}
-      <div style="display:flex">${dayCol}<div class="heatmap-wrap">${grid}</div></div>
-    </div>`;
-}
-
-// ── DASHBOARD ─────────────────────────────────────────────
-function renderDashboard(){
-  if(!ALL_WORKOUTS.length){
-    document.getElementById('dash-content').innerHTML=`<div class="empty-state">No workouts yet.<br>Tap + Log to add your first session.</div>`;
-    return;
-  }
-  const last=ALL_WORKOUTS[ALL_WORKOUTS.length-1];
-  const wNum=workoutNum(last);
-  const weekVol=Math.round(weeklyVolume(last.week));
-  const allVol=Math.round(totalVolume());
-  const thisWeekSessions=ALL_WORKOUTS.filter(w=>w.week===last.week).length;
-
-  const exHTML=last.exercises.map(ex=>`
-    <div class="exercise-row">
-      <div class="ex-name">${ex.name}</div>
-      <div class="sets-row">${chips(ex.sets)}</div>
-    </div>`).join('');
-
-  document.getElementById('dash-content').innerHTML=`
-    <div class="section-title">Last Session</div>
-    <div class="card">
-      <div class="session-header">
-        <div class="session-date">${last.date}</div>
-        <div class="${badgeClass(last.phase)}">${last.phase}</div>
-      </div>
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--muted2);margin-bottom:0.65rem;display:flex;align-items:center;gap:0.5rem">
-        <span>Workout #${wNum}</span>
-        <span class="recency-latest">Most Recent</span>
-      </div>
-      ${exHTML}
-      ${last.notes?`<div class="card-sub" style="margin-top:0.6rem;border-top:1px solid var(--border);padding-top:0.6rem">${last.notes}</div>`:''}
-    </div>
-
-    <div class="stat-grid">
-      <div class="card"><div class="card-label">Sessions This Week</div><div class="card-value">${thisWeekSessions}</div><div class="card-sub">week ${last.week}</div></div>
-      <div class="card"><div class="card-label">Volume This Week</div><div class="card-value" style="font-size:1.3rem">${weekVol.toLocaleString()}</div><div class="card-sub">kg</div></div>
-      <div class="card"><div class="card-label">Total Sessions</div><div class="card-value">${wNum}</div><div class="card-sub">all time</div></div>
-      <div class="card"><div class="card-label">Total Volume</div><div class="card-value" style="font-size:1.3rem">${allVol.toLocaleString()}</div><div class="card-sub">kg all time</div></div>
-    </div>
-
-    ${renderCycleHTML()}
-    ${renderHeatmapHTML()}
-
-    <div class="section-title">Training Philosophy</div>
-    <div class="philosophy-display placeholder" id="phil-display" onclick="openPhilosophy()">Tap to write your training philosophy...</div>
-    <div class="philosophy-edit" id="phil-edit">
-      <textarea id="phil-textarea" placeholder="Write your training goals, principles, periodization rationale..."></textarea>
-      <div class="philosophy-hint">Saved to your GitHub repo as philosophy.txt</div>
-      <div class="phil-btn-row">
-        <button class="btn-sm" onclick="savePhilosophy()">Save</button>
-        <button class="btn-sm ghost" onclick="cancelPhilosophy()">Cancel</button>
-      </div>
-    </div>`;
-}
-
-// ── PHILOSOPHY ────────────────────────────────────────────
-let philSHA=null;
-async function loadPhilosophy(){
-  try{const d=await ghGet('philosophy.txt');philSHA=d.sha;setPhilDisplay(b64d(d.content));}catch(e){}
-}
-function setPhilDisplay(text){
-  const el=document.getElementById('phil-display');if(!el)return;
-  if(text&&text.trim()){el.textContent=text;el.classList.remove('placeholder');}
-  else{el.textContent='Tap to write your training philosophy...';el.classList.add('placeholder');}
-}
-function openPhilosophy(){
-  const d=document.getElementById('phil-display'),e=document.getElementById('phil-edit'),ta=document.getElementById('phil-textarea');
-  if(!d.classList.contains('placeholder'))ta.value=d.textContent;
-  d.style.display='none';e.style.display='flex';ta.focus();
-}
-function cancelPhilosophy(){document.getElementById('phil-display').style.display='block';document.getElementById('phil-edit').style.display='none';}
-async function savePhilosophy(){
-  const text=document.getElementById('phil-textarea').value;
-  try{const r=await ghPut('philosophy.txt','update: training philosophy',text,philSHA);philSHA=r.content.sha;setPhilDisplay(text);cancelPhilosophy();}
-  catch(e){alert('Could not save: '+e.message);}
-}
-
-// ── PROGRESS ──────────────────────────────────────────────
-function renderProgress(){
-  if(!ALL_WORKOUTS.length){document.getElementById('progress-content').innerHTML=`<div class="empty-state">No workouts yet.</div>`;return;}
-  const names=[];
-  ALL_WORKOUTS.forEach(w=>w.exercises.forEach(ex=>{if(!names.includes(ex.name))names.push(ex.name);}));
-  names.sort();
-  let html='';
-  names.forEach(name=>{
-    const sessions=ALL_WORKOUTS.filter(w=>w.exercises.some(e=>e.name===name)).slice(-3).reverse();
-    const rows=sessions.map((w,ri)=>{
-      const ex=w.exercises.find(e=>e.name===name);
-      const tag=ri===0?`<span class="recency-latest">Latest</span>`:'';
-      return`<div class="recent-session-row">
+    // ── PROGRESS (STRENGTH ONLY) ──────────────────────────────
+    function renderProgress() {
+      if (!WEIGHT_WORKOUTS.length) { document.getElementById('progress-content').innerHTML = `<div class="empty-state">No strength data archived.</div>`; return; }
+      const names = [];
+      WEIGHT_WORKOUTS.forEach(w => w.exercises.forEach(ex => { if (!names.includes(ex.name)) names.push(ex.name); }));
+      names.sort();
+      let html = '';
+      names.forEach(name => {
+        const sessions = WEIGHT_WORKOUTS.filter(w => w.exercises.some(e => e.name === name)).slice(-3).reverse();
+        const rows = sessions.map((w, ri) => {
+          const ex = w.exercises.find(e => e.name === name);
+          const tag = ri === 0 ? `<span class="recency-latest">Latest</span>` : '';
+          return `<div class="recent-session-row">
         <div class="rs-date-col"><span class="rs-date">${w.date.slice(5)}</span>${tag}</div>
         <div class="rs-sets">${chips(ex.sets)}</div>
       </div>`;
-    }).join('');
-    html+=`<div class="progress-ex-block card"><div class="progress-ex-title">${name}</div>${rows}</div>`;
-  });
-  document.getElementById('progress-content').innerHTML=html;
-}
-
-// ── PRs ───────────────────────────────────────────────────
-function renderPRs(){
-  prCharts.forEach(c=>c.destroy());prCharts=[];
-  if(!ALL_WORKOUTS.length){document.getElementById('prs-content').innerHTML=`<div class="empty-state">No workouts yet.</div>`;return;}
-  const names=[];
-  ALL_WORKOUTS.forEach(w=>w.exercises.forEach(ex=>{if(!names.includes(ex.name))names.push(ex.name);}));
-  names.sort();
-  let html='';const toChart=[];
-  names.forEach(name=>{
-    const entries=[];
-    ALL_WORKOUTS.forEach(w=>{
-      w.exercises.forEach(ex=>{
-        if(ex.name!==name)return;
-        ex.sets.forEach(s=>{if(s.reps===1)entries.push({date:w.date,weight:s.weight_kg});});
+        }).join('');
+        html += `<div class="progress-ex-block card"><div class="progress-ex-title">${name}</div>${rows}</div>`;
       });
-    });
-    if(!entries.length)return;
-    const best=entries.reduce((b,e)=>e.weight>b.weight?e:b,entries[0]);
-    const cid=`prc-${name.replace(/[^a-z0-9]/gi,'-')}`;
-    html+=`<div class="pr-ex-block card">
-      <div class="pr-ex-title">${name}</div>
+      document.getElementById('progress-content').innerHTML = html;
+    }
+
+    // ── RUNNING TAB (HISTORY) ─────────────────────────────────
+    function renderRunning() {
+      if (!RUN_WORKOUTS.length) {
+        document.getElementById('running-content').innerHTML = `<div class="empty-state">No endurance data archived.</div>`;
+        return;
+      }
+
+      let html = `<div class="section-title">Endurance Archive</div>`;
+
+      const runs = [...RUN_WORKOUTS].reverse();
+      html += runs.map((r, ri) => {
+        const tag = ri === 0 ? `<span class="recency-latest">Latest</span>` : '';
+        let intervalsHtml = '';
+        if (r.intervals && r.intervals.length > 0) {
+          intervalsHtml = `<div class="run-intervals">${r.intervals.join('\n')}</div>`;
+        }
+
+        return `
+        <div class="all-session-block">
+            <div class="all-session-hdr">
+                <div class="all-session-left"><div class="all-session-date">${r.date}</div>${tag}</div>
+                <div class="all-phase">${r.run_type || 'RUN'}</div>
+            </div>
+            <div class="all-session-body">
+                <div class="run-metric-row" style="margin-top:0;">
+                    ${r.distance ? `<div class="run-metric"><span class="run-metric-lbl">Distance</span><span class="run-metric-val">${r.distance}</span></div>` : ''}
+                    ${r.time ? `<div class="run-metric"><span class="run-metric-lbl">Time</span><span class="run-metric-val">${r.time}</span></div>` : ''}
+                    ${r.pace ? `<div class="run-metric"><span class="run-metric-lbl">Pace</span><span class="run-metric-val">${r.pace}</span></div>` : ''}
+                    ${r.hr ? `<div class="run-metric"><span class="run-metric-lbl">Avg HR</span><span class="run-metric-val">${r.hr}</span></div>` : ''}
+                </div>
+                ${intervalsHtml}
+                ${r.notes ? `<div class="card-sub" style="margin-top:1rem;border-top:1px solid var(--border);padding-top:0.75rem">${r.notes}</div>` : ''}
+            </div>
+        </div>`;
+      }).join('');
+
+      document.getElementById('running-content').innerHTML = html;
+    }
+
+    // ── PRs (STRENGTH ONLY - MOVED TO DASHBOARD) ──────────────
+    function renderPRs() {
+      prCharts.forEach(c => c.destroy()); prCharts = [];
+      if (!WEIGHT_WORKOUTS.length) { document.getElementById('prs-container').innerHTML = ''; return; }
+      const names = [];
+      WEIGHT_WORKOUTS.forEach(w => w.exercises.forEach(ex => { if (!names.includes(ex.name)) names.push(ex.name); }));
+      names.sort();
+      let html = `<div class="section-title">Personal Records</div>`;
+      const toChart = [];
+      names.forEach(name => {
+        const entries = [];
+        WEIGHT_WORKOUTS.forEach(w => {
+          w.exercises.forEach(ex => {
+            if (ex.name !== name) return;
+            ex.sets.forEach(s => { if (s.reps === 1) entries.push({ date: w.date, weight: s.weight_kg }); });
+          });
+        });
+        if (!entries.length) return;
+        const best = entries.reduce((b, e) => e.weight > b.weight ? e : b, entries[0]);
+        const cid = `prc-${name.replace(/[^a-z0-9]/gi, '-')}`;
+        html += `<div class="pr-ex-block card">
+      <div class="progress-ex-title" style="border:none; margin-bottom:0.25rem;">${name}</div>
       <div class="pr-best">PR — ${best.weight}kg · ${best.date}</div>
       <div class="chart-wrap"><canvas id="${cid}"></canvas></div>
     </div>`;
-    toChart.push({entries,cid});
-  });
-  if(!html)html=`<div class="empty-state">No 1-rep max sets yet.<br>Log a set as <strong>weightx1</strong> to track PRs.</div>`;
-  document.getElementById('prs-content').innerHTML=html;
-  requestAnimationFrame(()=>{
-    toChart.forEach(({entries,cid})=>{
-      const ctx=document.getElementById(cid);if(!ctx)return;
-      const sorted=[...entries].sort((a,b)=>a.date.localeCompare(b.date));
-      const points=sorted.map(e=>({x:new Date(e.date).getTime(),y:e.weight}));
-      prCharts.push(new Chart(ctx,{type:'line',data:{datasets:[{data:points,borderColor:'#e8ff47',backgroundColor:'#e8ff4718',borderWidth:2,pointBackgroundColor:'#e8ff47',pointRadius:5,tension:0.2,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{type:'time',time:{unit:'day',tooltipFormat:'yyyy-MM-dd',displayFormats:{day:'d MMM',month:'MMM yy'}},grid:{color:'#1a1a1a'},ticks:{color:'#555',font:{family:'IBM Plex Mono',size:9},maxTicksLimit:6}},y:{grid:{color:'#1a1a1a'},ticks:{color:'#555',font:{family:'IBM Plex Mono',size:10}}}}}}));
-    });
-  });
-}
+        toChart.push({ entries, cid });
+      });
+      if (toChart.length === 0) {
+        html += `<div class="empty-state">No 1-rep max sets recorded.</div>`;
+      }
+      document.getElementById('prs-container').innerHTML = html;
 
-// ── ALL WORKOUTS ──────────────────────────────────────────
-function renderAllWorkouts(){
-  if(!ALL_WORKOUTS.length){document.getElementById('all-content').innerHTML=`<div class="empty-state">No workouts yet.</div>`;return;}
-  const html=[...ALL_WORKOUTS].reverse().map((w,ri)=>{
-    const n=workoutNum(w);
-    const tag=ri===0?`<span class="recency-latest">Latest</span>`:'';
-    const exHTML=w.exercises.map(ex=>`<div class="exercise-row"><div class="ex-name">${ex.name}</div><div class="sets-row">${chips(ex.sets)}</div></div>`).join('');
-    return`<div class="all-session-block">
-      <div class="all-session-hdr">
-        <div class="all-session-left"><div class="all-wnum">#${n}</div><div class="all-session-date">${w.date}</div>${tag}</div>
-        <div class="all-phase">${w.phase} · W${w.week}</div>
-      </div>
-      <div class="card" style="padding:0.5rem 1rem">${exHTML}${w.notes?`<div class="card-sub" style="margin-top:0.5rem;padding-top:0.5rem;border-top:1px solid var(--border)">${w.notes}</div>`:''}</div>
-    </div>`;
-  }).join('');
-  document.getElementById('all-content').innerHTML=html;
-}
-
-// ── REPROCESS ─────────────────────────────────────────────
-async function triggerReprocess(){
-  const el=document.getElementById('reprocess-status');
-  el.className='status-msg';el.textContent='Triggering GitHub Action...';
-  try{
-    const r=await fetch(`${API()}/actions/workflows/parse.yml/dispatches`,{
-      method:'POST',
-      headers:HDR(),
-      body:JSON.stringify({ref:'main',inputs:{force_reprocess:'true'}})
-    });
-    if(r.status===204||r.ok){
-      el.className='status-msg ok';
-      el.textContent='✓ Reprocess triggered. Check Actions tab in GitHub. Reload app in ~60s.';
-    } else {
-      const j=await r.json();
-      throw new Error(j.message||`HTTP ${r.status}`);
+      requestAnimationFrame(() => {
+        toChart.forEach(({ entries, cid }) => {
+          const ctx = document.getElementById(cid); if (!ctx) return;
+          const sorted = [...entries].sort((a, b) => a.date.localeCompare(b.date));
+          const points = sorted.map(e => ({ x: new Date(e.date).getTime(), y: e.weight }));
+          prCharts.push(new Chart(ctx, { type: 'line', data: { datasets: [{ data: points, borderColor: '#A33F1F', backgroundColor: '#A33F1F15', borderWidth: 2, pointBackgroundColor: '#A33F1F', pointRadius: 4, tension: 0.1, fill: true }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { type: 'time', time: { unit: 'day', tooltipFormat: 'yyyy-MM-dd', displayFormats: { day: 'd MMM', month: 'MMM yy' } }, grid: { color: '#EBE5DA' }, ticks: { color: '#595959', font: { family: 'inherit', size: 10 }, maxTicksLimit: 6 } }, y: { grid: { color: '#EBE5DA' }, ticks: { color: '#595959', font: { family: 'inherit', size: 11 } } } } } }));
+        });
+      });
     }
-  }catch(e){
-    el.className='status-msg err';el.textContent='✗ '+e.message;
-  }
-}
 
-// ── LOGO TAP ──────────────────────────────────────────────
-let tapCount=0,tapTimer=null;
-function handleLogoTap(){
-  tapCount++;clearTimeout(tapTimer);
-  if(tapCount>=2){tapCount=0;showAll();return;}
-  tapTimer=setTimeout(()=>{tapCount=0;},400);
-}
-function showAll(){
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('panel-all').classList.add('active');
-  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-  const logo=document.getElementById('logo');logo.classList.add('flash');setTimeout(()=>logo.classList.remove('flash'),200);
-}
-function closeAll(){
-  document.getElementById('panel-all').classList.remove('active');
-  document.getElementById('panel-dashboard').classList.add('active');
-  document.querySelector('nav button').classList.add('active');
-}
+    // ── ALL WORKOUTS ──────────────────────────────────────────
+    function renderAllWorkouts() {
+      if (!ALL_WORKOUTS.length) { document.getElementById('all-content').innerHTML = `<div class="empty-state">Archive empty.</div>`; return; }
+      const html = [...ALL_WORKOUTS].reverse().map((w, ri) => {
+        const tag = ri === 0 ? `<span class="recency-latest">Latest</span>` : '';
 
-// ── TABS ──────────────────────────────────────────────────
-function switchTab(name,btn){
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('panel-all').classList.remove('active');
-  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-  document.getElementById('panel-'+name).classList.add('active');
-  btn.classList.add('active');
-}
+        if (w.type === 'run') {
+          let intervalsHtml = '';
+          if (w.intervals && w.intervals.length > 0) {
+            intervalsHtml = `<div class="run-intervals">${w.intervals.join('\n')}</div>`;
+          }
+          return `<div class="all-session-block">
+          <div class="all-session-hdr">
+            <div class="all-session-left"><div class="all-session-date">${w.date}</div>${tag}</div>
+            <div class="all-phase">${w.run_type || 'RUN'}</div>
+          </div>
+          <div class="all-session-body">
+             <div class="run-metric-row" style="margin-top:0;">
+                ${w.distance ? `<div class="run-metric"><span class="run-metric-lbl">Distance</span><span class="run-metric-val">${w.distance}</span></div>` : ''}
+                ${w.time ? `<div class="run-metric"><span class="run-metric-lbl">Time</span><span class="run-metric-val">${w.time}</span></div>` : ''}
+                ${w.pace ? `<div class="run-metric"><span class="run-metric-lbl">Pace</span><span class="run-metric-val">${w.pace}</span></div>` : ''}
+                ${w.hr ? `<div class="run-metric"><span class="run-metric-lbl">Avg HR</span><span class="run-metric-val">${w.hr}</span></div>` : ''}
+             </div>
+             ${intervalsHtml}
+             ${w.notes ? `<div class="card-sub" style="margin-top:1rem;border-top:1px solid var(--border);padding-top:0.75rem">${w.notes}</div>` : ''}
+          </div>
+        </div>`;
+        } else {
+          const n = weightWorkoutNum(w);
+          const exHTML = w.exercises.map(ex => `<div class="exercise-row"><div class="ex-name">${ex.name}</div><div class="sets-row">${chips(ex.sets)}</div></div>`).join('');
+          return `<div class="all-session-block">
+          <div class="all-session-hdr">
+            <div class="all-session-left"><div class="all-wnum">#${n}</div><div class="all-session-date">${w.date}</div>${tag}</div>
+            <div class="all-phase">${w.phase} · W${w.week}</div>
+          </div>
+          <div class="all-session-body">
+            ${exHTML}
+            ${w.notes ? `<div class="card-sub" style="margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--border)">${w.notes}</div>` : ''}
+          </div>
+        </div>`;
+        }
+      }).join('');
+      document.getElementById('all-content').innerHTML = html;
+    }
 
-// ── LOG ───────────────────────────────────────────────────
-async function submitLog(){
-  const text=document.getElementById('log-input').value.trim();if(!text)return;
-  const dm=text.match(/^(\d{4}-\d{2}-\d{2})/);
-  if(!dm){setStatus('err','First line must start with YYYY-MM-DD');return;}
-  const filename=`logs/raw/${dm[1]}.txt`;
-  const btn=document.getElementById('submit-btn');btn.disabled=true;setStatus('','Committing to GitHub...');
-  try{
-    let sha;
-    try{const e=await fetch(`${API()}/contents/${filename}`,{headers:HDR()});if(e.ok)sha=(await e.json()).sha;}catch(e){}
-    await ghPut(filename,`log: workout ${dm[1]}`,text,sha);
-    setStatus('ok','✓ Committed! Dashboard updates in ~35s.');
-    document.getElementById('log-input').value='';
-    setTimeout(()=>loadAllWorkouts(),35000);
-  }catch(e){setStatus('err','✗ '+e.message);}
-  finally{document.getElementById('submit-btn').disabled=false;}
-}
-function setStatus(type,msg){const el=document.getElementById('log-status');el.className='status-msg'+(type?' '+type:'');el.textContent=msg;}
+    // ── REPROCESS ─────────────────────────────────────────────
+    async function triggerReprocess() {
+      const el = document.getElementById('reprocess-status');
+      el.className = 'status-msg'; el.textContent = 'Initiating system reprocess...';
+      try {
+        const r = await fetch(`${API()}/actions/workflows/parse.yml/dispatches`, {
+          method: 'POST',
+          headers: HDR(),
+          body: JSON.stringify({ ref: 'main', inputs: { force_reprocess: 'true' } })
+        });
+        if (r.status === 204 || r.ok) {
+          el.className = 'status-msg ok';
+          el.textContent = '✓ Process initiated. Reload interface in ~60s.';
+        } else {
+          const j = await r.json();
+          throw new Error(j.message || `HTTP ${r.status}`);
+        }
+      } catch (e) {
+        el.className = 'status-msg err'; el.textContent = '✗ ' + e.message;
+      }
+    }
 
-// ── INIT ──────────────────────────────────────────────────
-loadConfig();
-</script>
+    // ── LOGO TAP ──────────────────────────────────────────────
+    let tapCount = 0, tapTimer = null;
+    function handleLogoTap() {
+      tapCount++; clearTimeout(tapTimer);
+      if (tapCount >= 2) { tapCount = 0; showAll(); return; }
+      tapTimer = setTimeout(() => { tapCount = 0; }, 400);
+    }
+    function showAll() {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel-all').classList.add('active');
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      const logo = document.getElementById('logo'); logo.classList.add('flash'); setTimeout(() => logo.classList.remove('flash'), 200);
+      window.scrollTo(0, 0);
+    }
+    function closeAll() {
+      document.getElementById('panel-all').classList.remove('active');
+      document.getElementById('panel-dashboard').classList.add('active');
+      document.querySelector('nav button').classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    // ── TABS ──────────────────────────────────────────────────
+    function switchTab(name, btn) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel-all').classList.remove('active');
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      document.getElementById('panel-' + name).classList.add('active');
+      btn.classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    // ── LOG ───────────────────────────────────────────────────
+    async function submitLog() {
+      const text = document.getElementById('log-input').value.trim(); if (!text) return;
+      const dm = text.match(/^(\d{4}-\d{2}-\d{2})/);
+      if (!dm) { setStatus('err', 'Format requires YYYY-MM-DD on line 1.'); return; }
+
+      // Quick validation to prevent overlapping filenames if multiple logged on same day
+      const timestamp = new Date().getTime().toString().slice(-4);
+      const isRun = text.split('\n')[0].toLowerCase().includes('| run |');
+      const typeSuffix = isRun ? '-run' : '';
+      const filename = `logs/raw/${dm[1]}${typeSuffix}-${timestamp}.txt`;
+
+      const btn = document.getElementById('submit-btn'); btn.disabled = true; setStatus('', 'Committing to GitHub...');
+      try {
+        let sha;
+        try { const e = await fetch(`${API()}/contents/${filename}`, { headers: HDR() }); if (e.ok) sha = (await e.json()).sha; } catch (e) { }
+        await ghPut(filename, `log: record ${dm[1]}`, text, sha);
+        setStatus('ok', '✓ Committed successfully. Updating archive in ~35s.');
+        document.getElementById('log-input').value = '';
+        setTimeout(() => loadAllWorkouts(), 35000);
+      } catch (e) { setStatus('err', '✗ ' + e.message); }
+      finally { document.getElementById('submit-btn').disabled = false; }
+    }
+    function setStatus(type, msg) { const el = document.getElementById('log-status'); el.className = 'status-msg' + (type ? ' ' + type : ''); el.textContent = msg; }
+
+    // ── INIT ──────────────────────────────────────────────────
+    loadConfig();
+  </script>
 </body>
+
 </html>
