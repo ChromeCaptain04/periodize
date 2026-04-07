@@ -1,5 +1,5 @@
 2026-04-04 | 2 | accumulation | Stopped doing finger flexion in wrist curls. Pain in shoulder when doing 7.5kg lateral raises so switched to 5kg
 Flat dumbell press: 30x8, 30x6, 30x6, 30x5, 25x7
-Seated dumbell curl: 17.5x6, 17.5x6, 17.5x3, 15x6
+Seated dumbell curls: 17.5x6, 17.5x6, 17.5x3, 15x6
 Wrist curls: 15x8, 15x8, 15x5, 15x5
-Dumbell lateral raise: 5x12, 5x12, 5x12
+Dumbell lateral raises: 5x12, 5x12, 5x12
