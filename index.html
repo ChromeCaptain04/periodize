@@ -75,10 +75,11 @@
     }
 
     .config-title {
+      font-family: 'Georgia', 'Times New Roman', serif;
       font-size: 3rem;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.25em;
       color: var(--accent);
-      font-weight: bold;
+      font-weight: normal;
       text-transform: uppercase;
     }
 
@@ -148,19 +149,22 @@
       z-index: 100;
     }
 
+    /* Classical Logo Styling */
     .logo {
-      font-size: 1.5rem;
-      letter-spacing: 0.15em;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: 1.65rem;
+      letter-spacing: 0.25em;
       color: var(--accent);
       cursor: pointer;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
-      transition: color 0.15s;
-      font-weight: bold;
+      transition: opacity 0.2s;
+      font-weight: normal;
+      text-transform: uppercase;
     }
 
     .logo.flash {
-      color: var(--text);
+      opacity: 0.5;
     }
 
     .header-plus {
@@ -240,6 +244,7 @@
       border: 1px solid var(--border);
       padding: 1.25rem;
       margin-bottom: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.01);
     }
 
     .card-label {
@@ -441,6 +446,7 @@
       border: 1px solid var(--border);
       padding: 1.25rem;
       margin-bottom: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.01);
     }
 
     .cycle-top {
@@ -456,14 +462,6 @@
       text-transform: uppercase;
       letter-spacing: 0.1em;
       font-weight: bold;
-    }
-
-    .cycle-status {
-      font-size: 0.75rem;
-      color: var(--muted);
-      text-align: right;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
     }
 
     .cycle-complete {
@@ -549,45 +547,42 @@
 
     /* METHODOLOGY (PLAN) */
     .philosophy-display {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      padding: 1.25rem;
+      background: var(--surface);
+      border: 1px solid transparent;
+      padding: 2rem 1.5rem;
       font-size: 0.95rem;
       line-height: 1.8;
       color: var(--text);
       white-space: pre-wrap;
       min-height: 80px;
-      cursor: pointer;
-      transition: border-color 0.2s;
-    }
-
-    .philosophy-display:hover {
-      border-color: var(--accent);
     }
 
     .philosophy-display.placeholder {
       color: var(--muted2);
       font-style: italic;
+      border-color: var(--border);
     }
 
     .philosophy-edit {
       display: none;
       flex-direction: column;
       gap: 0.75rem;
+      padding: 2rem 1.5rem;
+      background: var(--surface);
     }
 
     .philosophy-edit textarea {
       width: 100%;
-      background: var(--surface);
+      background: var(--bg);
       border: 1px solid var(--accent);
       color: var(--text);
       font-family: inherit;
       font-size: 0.95rem;
-      padding: 1rem;
+      padding: 1.25rem;
       line-height: 1.8;
       resize: vertical;
       outline: none;
-      min-height: 300px;
+      min-height: 350px;
     }
 
     .philosophy-hint {
@@ -604,7 +599,7 @@
       background: var(--text);
       color: var(--surface);
       border: none;
-      padding: 0.5rem 1rem;
+      padding: 0.6rem 1.25rem;
       font-family: inherit;
       font-size: 0.85rem;
       letter-spacing: 0.1em;
@@ -860,6 +855,11 @@
     .footer-reconfig:hover {
       color: var(--accent);
     }
+
+    .footer-center {
+      flex: 1;
+      text-align: center;
+    }
   </style>
 </head>
 
@@ -914,15 +914,20 @@
 
     <div id="panel-plan" class="panel">
       <div class="section-title">Training Methodology</div>
-      <div class="philosophy-display placeholder" id="phil-display" onclick="openPhilosophy()">Define your principles...
-      </div>
-      <div class="philosophy-edit" id="phil-edit">
+
+      <div class="philosophy-display card" id="phil-display">Define your principles...</div>
+
+      <div class="philosophy-edit card" id="phil-edit">
         <textarea id="phil-textarea" placeholder="State your intent, methodology, and objectives..."></textarea>
-        <div class="philosophy-hint">Persisted securely to philosophy.txt</div>
+        <div class="philosophy-hint" style="margin-bottom: 1rem;">Persisted securely to philosophy.txt</div>
         <div class="phil-btn-row">
           <button class="btn-sm" onclick="savePhilosophy()">Save</button>
           <button class="btn-sm ghost" onclick="cancelPhilosophy()">Cancel</button>
         </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 2rem;" id="phil-amend-container">
+        <span class="footer-reconfig" onclick="openPhilosophy()">[ AMEND STRATEGY ]</span>
       </div>
     </div>
 
@@ -964,7 +969,8 @@
     </div>
 
     <div class="footnote">
-      <span>Double-tap SPARTAN logo to access archive.</span>
+      <span style="visibility:hidden" class="footer-reconfig">[ RECONFIGURE ]</span>
+      <span class="footer-center">Double-tap SPARTAN logo to access archive.</span>
       <span class="footer-reconfig" onclick="resetConfig()">[ RECONFIGURE ]</span>
     </div>
   </div>
@@ -1268,11 +1274,22 @@
       else { el.textContent = 'State your intent, methodology, and objectives...'; el.classList.add('placeholder'); }
     }
     function openPhilosophy() {
-      const d = document.getElementById('phil-display'), e = document.getElementById('phil-edit'), ta = document.getElementById('phil-textarea');
+      const d = document.getElementById('phil-display'),
+        e = document.getElementById('phil-edit'),
+        ta = document.getElementById('phil-textarea'),
+        btnContainer = document.getElementById('phil-amend-container');
+
       if (!d.classList.contains('placeholder')) ta.value = d.textContent;
-      d.style.display = 'none'; e.style.display = 'flex'; ta.focus();
+      d.style.display = 'none';
+      e.style.display = 'flex';
+      btnContainer.style.display = 'none'; // Hide the amend button
+      ta.focus();
     }
-    function cancelPhilosophy() { document.getElementById('phil-display').style.display = 'block'; document.getElementById('phil-edit').style.display = 'none'; }
+    function cancelPhilosophy() {
+      document.getElementById('phil-display').style.display = 'block';
+      document.getElementById('phil-edit').style.display = 'none';
+      document.getElementById('phil-amend-container').style.display = 'block';
+    }
     async function savePhilosophy() {
       const text = document.getElementById('phil-textarea').value;
       try { const r = await ghPut('philosophy.txt', 'update: training methodology', text, philSHA); philSHA = r.content.sha; setPhilDisplay(text); cancelPhilosophy(); }
