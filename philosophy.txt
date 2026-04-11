@@ -11,4 +11,8 @@ Strength phase:
 - 3-6 reprange
 
 
- 
+ Running plan:
+- easy run
+- interval run
+- max effort 5k
+- Sprints (after a month)
