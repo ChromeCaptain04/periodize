@@ -1,0 +1,31 @@
+{
+  "date": "2026-04-12",
+  "type": "weights",
+  "week": 3,
+  "phase": "accumulation",
+  "notes": "too hot and weak",
+  "exercises": [
+    {
+      "name": "Flat dumbell press",
+      "sets": [
+        {
+          "weight_kg": 32.5,
+          "reps": 4
+        },
+        {
+          "weight_kg": 30.0,
+          "reps": 8
+        },
+        {
+          "weight_kg": 30.0,
+          "reps": 6,
+          "count": 2
+        },
+        {
+          "weight_kg": 30.0,
+          "reps": 3
+        }
+      ]
+    }
+  ]
+}
