@@ -1152,7 +1152,7 @@
                     </div>
                   </div>`;
 
-      html += `<div class="cycle-wrap" style="padding: 1.5rem 1.25rem;"><div class="tube-scroll"><div class="tube-map" style="padding: 1rem 0.5rem;">`;
+      html += `<div class="cycle-wrap" style="padding: 1.5rem 1.25rem;"><div class="tube-scroll"><div class="tube-map" style="padding: 1.5rem 1.5rem;">`;
 
       for (let i = 0; i <= 36; i++) {
         let col = 'var(--border)';
@@ -1186,14 +1186,57 @@
 
         let dotSize = 12;
         if (size === 'lg') dotSize = 24;
-        if (size === 'xl') dotSize = 36;
+        if (size === 'xl') dotSize = 54; // 50% larger than before
 
-        let innerContent = '';
         if (i === 0) {
-          innerContent = `<span style="color:var(--surface); font-family: 'Georgia', 'Times New Roman', serif; font-size:1.1rem; font-weight:normal;">${prestige}</span>`;
-        }
+          // PRESTIGE EMBLEM: Bronze Hexagon, Metallic Sheen, Golden Laurel Wreath
+          html += `
+          <div style="position: relative; width: ${dotSize}px; height: ${dotSize}px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
+            <!-- Golden Laurel Wreath SVG -->
+            <svg viewBox="0 0 100 100" style="position: absolute; width: 145%; height: 145%; top: -22.5%; left: -22.5%; z-index: 0; filter: drop-shadow(0px 2px 3px rgba(0,0,0,0.2));">
+              <!-- Left branch -->
+              <path d="M 50 92 C 10 92 0 45 25 15" fill="none" stroke="#D4AF37" stroke-width="2"/>
+              <path d="M 25 15 Q 35 15 35 25 Q 25 25 25 15" fill="#D4AF37"/>
+              <path d="M 12 30 Q 25 25 25 40 Q 12 45 12 30" fill="#D4AF37"/>
+              <path d="M 6 50 Q 20 45 22 60 Q 8 65 6 50" fill="#D4AF37"/>
+              <path d="M 10 72 Q 22 65 28 80 Q 15 88 10 72" fill="#D4AF37"/>
+              <path d="M 28 90 Q 38 80 45 92 Q 35 102 28 90" fill="#D4AF37"/>
+              <!-- Right branch -->
+              <path d="M 50 92 C 90 92 100 45 75 15" fill="none" stroke="#D4AF37" stroke-width="2"/>
+              <path d="M 75 15 Q 65 15 65 25 Q 75 25 75 15" fill="#D4AF37"/>
+              <path d="M 88 30 Q 75 25 75 40 Q 88 45 88 30" fill="#D4AF37"/>
+              <path d="M 94 50 Q 80 45 78 60 Q 92 65 94 50" fill="#D4AF37"/>
+              <path d="M 90 72 Q 78 65 72 80 Q 85 88 90 72" fill="#D4AF37"/>
+              <path d="M 72 90 Q 62 80 55 92 Q 65 102 72 90" fill="#D4AF37"/>
+            </svg>
 
-        html += `<div style="width:${dotSize}px; height:${dotSize}px; background:${col}; opacity:${opacity}; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center;">${innerContent}</div>`;
+            <!-- Metallic Bronze Hexagon -->
+            <div style="
+              position: absolute;
+              width: 100%; height: 100%;
+              background: linear-gradient(135deg, #e3a869 0%, #b87333 30%, #8b4513 70%, #e3a869 100%);
+              clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+              z-index: 1;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            ">
+              <!-- Inner Hexagon for metallic depth -->
+              <div style="
+                width: 85%; height: 85%;
+                background: linear-gradient(to bottom right, #b87333, #5a2e0a);
+                clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              ">
+                <span style="color: #fff; font-family: 'Georgia', 'Times New Roman', serif; font-size: 1.6rem; font-weight: normal; text-shadow: 1px 1px 2px rgba(0,0,0,0.6);">${prestige}</span>
+              </div>
+            </div>
+          </div>`;
+        } else {
+          html += `<div style="width:${dotSize}px; height:${dotSize}px; background:${col}; opacity:${opacity}; border-radius:50%; flex-shrink:0;"></div>`;
+        }
       }
 
       html += `</div></div></div>`;
