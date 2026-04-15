@@ -1,0 +1,91 @@
+{
+  "date": "2026-04-15",
+  "type": "weights",
+  "notes": "trying lower sets",
+  "exercises": [
+    {
+      "name": "Flat dumbell press",
+      "sets": [
+        {
+          "weight_kg": 32.5,
+          "reps": 6
+        },
+        {
+          "weight_kg": 32.5,
+          "reps": 4,
+          "count": 2
+        },
+        {
+          "weight_kg": 32.5,
+          "reps": 5
+        }
+      ]
+    },
+    {
+      "name": "Seated dumbell curls",
+      "sets": [
+        {
+          "weight_kg": 15.0,
+          "reps": 6
+        },
+        {
+          "weight_kg": 15.0,
+          "reps": 8
+        },
+        {
+          "weight_kg": 15.0,
+          "reps": 5
+        },
+        {
+          "weight_kg": 15.0,
+          "reps": 6
+        }
+      ]
+    },
+    {
+      "name": "Skullcrushers",
+      "sets": [
+        {
+          "weight_kg": 30.0,
+          "reps": 6
+        },
+        {
+          "weight_kg": 30.0,
+          "reps": 7,
+          "count": 2
+        }
+      ]
+    },
+    {
+      "name": "Dumbell lateral raises",
+      "sets": [
+        {
+          "weight_kg": 5.0,
+          "reps": 16
+        },
+        {
+          "weight_kg": 5.0,
+          "reps": 8,
+          "count": 2
+        }
+      ]
+    },
+    {
+      "name": "Reverse barbell curls",
+      "sets": [
+        {
+          "weight_kg": 30.0,
+          "reps": 7
+        },
+        {
+          "weight_kg": 30.0,
+          "reps": 8
+        },
+        {
+          "weight_kg": 30.0,
+          "reps": 3
+        }
+      ]
+    }
+  ]
+}
