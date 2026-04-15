@@ -333,24 +333,12 @@
       font-weight: bold;
     }
 
-    .phase-badge {
-      font-size: 0.7rem;
-      background: var(--accent);
-      color: var(--surface);
-      padding: 0.25rem 0.6rem;
+    .plain-tag {
+      font-size: 0.85rem;
+      color: var(--muted);
       text-transform: uppercase;
       letter-spacing: 0.1em;
       font-weight: bold;
-    }
-
-    .phase-badge.strength {
-      background: var(--str);
-      color: var(--surface);
-    }
-
-    .phase-badge.run {
-      background: var(--text);
-      color: var(--surface);
     }
 
     .exercise-row {
@@ -434,7 +422,7 @@
     .cycle-wrap {
       background: var(--surface);
       border: 1px solid var(--border);
-      padding: 1.25rem;
+      padding: 0.75rem 1rem;
       margin-bottom: 1.5rem;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.01);
     }
@@ -449,7 +437,7 @@
       display: flex;
       align-items: center;
       min-width: min-content;
-      padding: 1rem 0.5rem;
+      padding: 0.5rem 0.25rem;
     }
 
     .t-line {
@@ -894,10 +882,10 @@
         <br><br>
         <strong>RUNNING SHORTHAND</strong><br>
         <span>YYYY-MM-DD | run | type | notes</span><br>
-        <span>distance | time | pace | hr</span><br>
+        <span>distance | time | heartrate | pace</span><br>
         Intervals: <span>(Optional details on subsequent lines)</span><br>
-        <em class="format-example">Example:<br>2026-04-16 | run | tempo | Hilly route<br>3.2 | 25:00 | 7:48 |
-          160<br>Intervals: 2x400m fast pacing</em>
+        <em class="format-example">Example:<br>2026-04-16 | run | tempo | Hilly route<br>3.2 | 25:00 | 160 |
+          7:48<br>Intervals: 2x400m fast pacing</em>
       </div>
 
       <label class="log-label">Entry Document</label>
@@ -1002,11 +990,6 @@
     }
 
     // ── HELPERS ───────────────────────────────────────────────
-    function badgeClass(type) {
-      if (type === 'run') return 'phase-badge run';
-      return 'phase-badge strength';
-    }
-
     function chips(sets) {
       return sets.map((s) => {
         const kg = `${s.weight_kg}kg`;
@@ -1022,21 +1005,31 @@
       return WEIGHT_WORKOUTS.reduce((t, w) => t + w.exercises.reduce((et, ex) => et + ex.sets.reduce((st, s) => st + (s.weight_kg * s.reps * (s.count || 1)), 0), 0), 0);
     }
 
-    function isWithinLast7Days(dateStr, targetDateStr) {
-      if (!dateStr || !targetDateStr) return false;
-      const targetDate = new Date(targetDateStr).getTime();
-      const weekStart = targetDate - (7 * 24 * 60 * 60 * 1000);
-      const d = new Date(dateStr).getTime();
-      return d > weekStart && d <= targetDate;
+    // Checks if the date falls within the *current* calendar week (Mon - Sun)
+    function isCurrentCalendarWeek(dateStr) {
+      if (!dateStr) return false;
+      const d = new Date(dateStr);
+      const now = new Date();
+
+      const day = now.getDay() || 7; // Convert Sunday (0) to 7
+      const monday = new Date(now);
+      monday.setHours(0, 0, 0, 0);
+      monday.setDate(now.getDate() - day + 1);
+
+      const sunday = new Date(monday);
+      sunday.setDate(monday.getDate() + 6);
+      sunday.setHours(23, 59, 59, 999);
+
+      return d.getTime() >= monday.getTime() && d.getTime() <= sunday.getTime();
     }
 
-    function weeklyVolume(currentDateStr) {
-      return WEIGHT_WORKOUTS.filter(w => isWithinLast7Days(w.date, currentDateStr))
+    function weeklyVolume() {
+      return WEIGHT_WORKOUTS.filter(w => isCurrentCalendarWeek(w.date))
         .reduce((t, w) => t + w.exercises.reduce((et, ex) => et + ex.sets.reduce((st, s) => st + (s.weight_kg * s.reps * (s.count || 1)), 0), 0), 0);
     }
 
-    function weeklyStrengthSessions(currentDateStr) {
-      return WEIGHT_WORKOUTS.filter(w => isWithinLast7Days(w.date, currentDateStr)).length;
+    function weeklyStrengthSessions() {
+      return WEIGHT_WORKOUTS.filter(w => isCurrentCalendarWeek(w.date)).length;
     }
 
     function extractMiles(distStr) {
@@ -1046,12 +1039,12 @@
     }
 
     function totalMiles() { return RUN_WORKOUTS.reduce((t, r) => t + extractMiles(r.distance), 0); }
-    function weeklyMiles(currentDateStr) {
-      return RUN_WORKOUTS.filter(r => isWithinLast7Days(r.date, currentDateStr)).reduce((t, r) => t + extractMiles(r.distance), 0);
+    function weeklyMiles() {
+      return RUN_WORKOUTS.filter(r => isCurrentCalendarWeek(r.date)).reduce((t, r) => t + extractMiles(r.distance), 0);
     }
     function totalRunSessions() { return RUN_WORKOUTS.length; }
-    function weeklyRunSessions(currentDateStr) {
-      return RUN_WORKOUTS.filter(r => isWithinLast7Days(r.date, currentDateStr)).length;
+    function weeklyRunSessions() {
+      return RUN_WORKOUTS.filter(r => isCurrentCalendarWeek(r.date)).length;
     }
 
     // ── DASHBOARD ─────────────────────────────────────────────
@@ -1059,15 +1052,15 @@
       let html = '';
 
       // --- STRENGTH SECTION ---
-      html += `<div class="section-title">Strength</div>`;
+      html += `<div class="section-title">Weightlifting</div>`;
       if (!WEIGHT_WORKOUTS.length) {
         html += `<div class="empty-state">No strength data archived.</div>`;
       } else {
         const lastW = WEIGHT_WORKOUTS[WEIGHT_WORKOUTS.length - 1];
         const wNum = weightWorkoutNum(lastW);
-        const weekVol = Math.round(weeklyVolume(lastW.date));
+        const weekVol = Math.round(weeklyVolume());
         const allVol = Math.round(totalVolume());
-        const thisWeekSessions = weeklyStrengthSessions(lastW.date);
+        const thisWeekSessions = weeklyStrengthSessions();
 
         const exHTML = lastW.exercises.map(ex => `
       <div class="exercise-row">
@@ -1079,7 +1072,7 @@
       <div class="card">
         <div class="session-header">
           <div class="session-date">${lastW.date}</div>
-          <div class="${badgeClass('strength')}">STRENGTH</div>
+          <div class="plain-tag">WEIGHTLIFTING</div>
         </div>
         <div style="font-size:0.75rem;color:var(--muted);margin-bottom:1rem;display:flex;align-items:center;gap:0.75rem; font-weight:bold;">
           <span>Session #${wNum}</span>
@@ -1090,7 +1083,7 @@
       </div>
 
       <div class="stat-grid">
-        <div class="card" style="margin-bottom:0;"><div class="card-label">Sessions This Week</div><div class="card-value">${thisWeekSessions}</div><div class="card-sub">Last 7 Days</div></div>
+        <div class="card" style="margin-bottom:0;"><div class="card-label">Sessions This Week</div><div class="card-value">${thisWeekSessions}</div><div class="card-sub">This Week</div></div>
         <div class="card" style="margin-bottom:0;"><div class="card-label">Volume This Week</div><div class="card-value">${weekVol.toLocaleString()}</div><div class="card-sub">kg</div></div>
         <div class="card" style="margin-bottom:0;"><div class="card-label">Total Sessions</div><div class="card-value">${wNum}</div><div class="card-sub">All-time</div></div>
         <div class="card" style="margin-bottom:0;"><div class="card-label">Total Volume</div><div class="card-value">${allVol.toLocaleString()}</div><div class="card-sub">kg All-time</div></div>
@@ -1107,9 +1100,9 @@
       } else {
         const lastR = RUN_WORKOUTS[RUN_WORKOUTS.length - 1];
         const allMi = totalMiles().toFixed(1);
-        const weekMi = weeklyMiles(lastR.date).toFixed(1);
+        const weekMi = weeklyMiles().toFixed(1);
         const allRuns = totalRunSessions();
-        const weekRuns = weeklyRunSessions(lastR.date);
+        const weekRuns = weeklyRunSessions();
 
         let intervalsHtml = '';
         if (lastR.intervals && lastR.intervals.length > 0) {
@@ -1120,7 +1113,7 @@
       <div class="card">
         <div class="session-header">
           <div class="session-date">${lastR.date}</div>
-          <div class="${badgeClass('run')}">${lastR.run_type || 'RUN'}</div>
+          <div class="plain-tag">${lastR.run_type || 'RUN'}</div>
         </div>
         <div style="font-size:0.75rem;color:var(--muted);margin-bottom:1rem;display:flex;align-items:center;gap:0.75rem; font-weight:bold;">
           <span class="recency-latest">Latest Run</span>
@@ -1129,16 +1122,16 @@
         <div class="run-metric-row">
             ${lastR.distance ? `<div class="run-metric"><span class="run-metric-lbl">Distance</span><span class="run-metric-val">${lastR.distance} mi</span></div>` : ''}
             ${lastR.time ? `<div class="run-metric"><span class="run-metric-lbl">Time</span><span class="run-metric-val">${lastR.time}</span></div>` : ''}
-            ${lastR.pace ? `<div class="run-metric"><span class="run-metric-lbl">Pace</span><span class="run-metric-val">${lastR.pace} min/mi</span></div>` : ''}
-            ${lastR.hr ? `<div class="run-metric"><span class="run-metric-lbl">Avg HR</span><span class="run-metric-val">${lastR.hr} bpm</span></div>` : ''}
+            ${lastR.heartrate ? `<div class="run-metric"><span class="run-metric-lbl">Heartrate</span><span class="run-metric-val">${lastR.heartrate} bpm</span></div>` : ''}
+            ${lastR.pace ? `<div class="run-metric"><span class="run-metric-lbl">Avg Pace</span><span class="run-metric-val">${lastR.pace} mins per mile</span></div>` : ''}
         </div>
         ${intervalsHtml}
         ${lastR.notes ? `<div class="card-sub" style="margin-top:1rem;border-top:1px solid var(--border);padding-top:0.75rem">${lastR.notes}</div>` : ''}
       </div>
 
       <div class="stat-grid">
-        <div class="card" style="margin-bottom:0;"><div class="card-label">Runs This Week</div><div class="card-value">${weekRuns}</div><div class="card-sub">Last 7 Days</div></div>
-        <div class="card" style="margin-bottom:0;"><div class="card-label">Miles This Week</div><div class="card-value">${weekMi}</div><div class="card-sub">mi Last 7 Days</div></div>
+        <div class="card" style="margin-bottom:0;"><div class="card-label">Runs This Week</div><div class="card-value">${weekRuns}</div><div class="card-sub">This Week</div></div>
+        <div class="card" style="margin-bottom:0;"><div class="card-label">Miles This Week</div><div class="card-value">${weekMi}</div><div class="card-sub">mi This Week</div></div>
         <div class="card" style="margin-bottom:0;"><div class="card-label">Total Runs</div><div class="card-value">${allRuns}</div><div class="card-sub">All-time</div></div>
         <div class="card" style="margin-bottom:0;"><div class="card-label">Total Distance</div><div class="card-value">${allMi}</div><div class="card-sub">mi All-time</div></div>
       </div>`;
@@ -1154,8 +1147,10 @@
       let currentW = totalW === 0 ? 0 : ((totalW - 1) % 36) + 1;
 
       let html = `<div class="section-title" style="margin-top:2.5rem; display:flex; justify-content:space-between; align-items:baseline;">
-                    <span>Training Cycle</span>
-                    <span style="font-size:0.8rem; color:var(--muted); letter-spacing:0.1em;">PRESTIGE: ${prestige}</span>
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                      <span>Weightlifting Tracker</span>
+                      <div style="background:var(--accent); color:var(--surface); width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:bold;" title="Prestige Level">${prestige}</div>
+                    </div>
                   </div>`;
 
       html += `<div class="cycle-wrap"><div class="tube-scroll"><div class="tube-map">`;
@@ -1190,7 +1185,7 @@
         }
 
         const dotSize = size === 'lg' ? 22 : 10;
-        html += `<div style="width:${dotSize}px; height:${dotSize}px; background:${col}; opacity:${opacity}; border-radius:50%; flex-shrink:0; box-shadow: 0 0 4px ${isLit ? col : 'transparent'}"></div>`;
+        html += `<div style="width:${dotSize}px; height:${dotSize}px; background:${col}; opacity:${opacity}; border-radius:50%; flex-shrink:0;"></div>`;
       }
 
       html += `</div></div></div>`;
@@ -1282,14 +1277,14 @@
         <div class="all-session-block">
             <div class="all-session-hdr">
                 <div class="all-session-left"><div class="all-session-date">${r.date}</div>${tag}</div>
-                <div class="all-phase">${r.run_type || 'RUN'}</div>
+                <div class="plain-tag">${r.run_type || 'RUN'}</div>
             </div>
             <div class="all-session-body">
                 <div class="run-metric-row" style="margin-top:0;">
                     ${r.distance ? `<div class="run-metric"><span class="run-metric-lbl">Distance</span><span class="run-metric-val">${r.distance} mi</span></div>` : ''}
                     ${r.time ? `<div class="run-metric"><span class="run-metric-lbl">Time</span><span class="run-metric-val">${r.time}</span></div>` : ''}
-                    ${r.pace ? `<div class="run-metric"><span class="run-metric-lbl">Pace</span><span class="run-metric-val">${r.pace} min/mi</span></div>` : ''}
-                    ${r.hr ? `<div class="run-metric"><span class="run-metric-lbl">Avg HR</span><span class="run-metric-val">${r.hr} bpm</span></div>` : ''}
+                    ${r.heartrate ? `<div class="run-metric"><span class="run-metric-lbl">Heartrate</span><span class="run-metric-val">${r.heartrate} bpm</span></div>` : ''}
+                    ${r.pace ? `<div class="run-metric"><span class="run-metric-lbl">Avg Pace</span><span class="run-metric-val">${r.pace} mins per mile</span></div>` : ''}
                 </div>
                 ${intervalsHtml}
                 ${r.notes ? `<div class="card-sub" style="margin-top:1rem;border-top:1px solid var(--border);padding-top:0.75rem">${r.notes}</div>` : ''}
@@ -1356,14 +1351,14 @@
           return `<div class="all-session-block">
           <div class="all-session-hdr">
             <div class="all-session-left"><div class="all-session-date">${w.date}</div>${tag}</div>
-            <div class="all-phase">${w.run_type || 'RUN'}</div>
+            <div class="plain-tag">${w.run_type || 'RUN'}</div>
           </div>
           <div class="all-session-body">
              <div class="run-metric-row" style="margin-top:0;">
                 ${w.distance ? `<div class="run-metric"><span class="run-metric-lbl">Distance</span><span class="run-metric-val">${w.distance} mi</span></div>` : ''}
                 ${w.time ? `<div class="run-metric"><span class="run-metric-lbl">Time</span><span class="run-metric-val">${w.time}</span></div>` : ''}
-                ${w.pace ? `<div class="run-metric"><span class="run-metric-lbl">Pace</span><span class="run-metric-val">${w.pace} min/mi</span></div>` : ''}
-                ${w.hr ? `<div class="run-metric"><span class="run-metric-lbl">Avg HR</span><span class="run-metric-val">${w.hr} bpm</span></div>` : ''}
+                ${w.heartrate ? `<div class="run-metric"><span class="run-metric-lbl">Heartrate</span><span class="run-metric-val">${w.heartrate} bpm</span></div>` : ''}
+                ${w.pace ? `<div class="run-metric"><span class="run-metric-lbl">Avg Pace</span><span class="run-metric-val">${w.pace} mins per mile</span></div>` : ''}
              </div>
              ${intervalsHtml}
              ${w.notes ? `<div class="card-sub" style="margin-top:1rem;border-top:1px solid var(--border);padding-top:0.75rem">${w.notes}</div>` : ''}
@@ -1373,13 +1368,10 @@
           const n = weightWorkoutNum(w);
           const exHTML = w.exercises.map(ex => `<div class="exercise-row"><div class="ex-name">${ex.name}</div><div class="sets-row">${chips(ex.sets)}</div></div>`).join('');
 
-          // Fallback to periodization values if old logs still have them
-          const subTitle = w.phase ? `${w.phase} · W${w.week}` : 'STRENGTH';
-
           return `<div class="all-session-block">
           <div class="all-session-hdr">
             <div class="all-session-left"><div class="all-wnum">#${n}</div><div class="all-session-date">${w.date}</div>${tag}</div>
-            <div class="all-phase">${subTitle}</div>
+            <div class="plain-tag">WEIGHTLIFTING</div>
           </div>
           <div class="all-session-body">
             ${exHTML}

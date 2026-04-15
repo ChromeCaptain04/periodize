@@ -11,8 +11,8 @@ Strength Format:
 
 Run Format:
   2026-04-16 | run | tempo | Optional notes here
-  5mi | 45:30 | 9:06/mi | 155bpm
-  Intervals: 8x400m @ 6:00/mi pace, 60s rest
+  5mi | 25:00 | 160 | 7:48
+  Intervals: 8x400m fast pacing
 """
 
 import json
@@ -78,7 +78,7 @@ def parse_exercise_line(line: str) -> dict:
 
 def parse_run_body(lines: list) -> dict:
     if not lines:
-        return {"distance": "", "time": "", "pace": "", "hr": "", "intervals": []}
+        return {"distance": "", "time": "", "heartrate": "", "pace": "", "intervals": []}
     
     # First line of body represents core metrics split by pipe
     metrics_line = lines[0]
@@ -86,8 +86,8 @@ def parse_run_body(lines: list) -> dict:
     
     distance = metrics[0] if len(metrics) > 0 else ""
     time = metrics[1] if len(metrics) > 1 else ""
-    pace = metrics[2] if len(metrics) > 2 else ""
-    hr = metrics[3] if len(metrics) > 3 else ""
+    heartrate = metrics[2] if len(metrics) > 2 else ""
+    pace = metrics[3] if len(metrics) > 3 else ""
     
     # Any subsequent lines are saved as details/intervals
     intervals = []
@@ -97,8 +97,8 @@ def parse_run_body(lines: list) -> dict:
     return {
         "distance": distance,
         "time": time,
+        "heartrate": heartrate,
         "pace": pace,
-        "hr": hr,
         "intervals": intervals
     }
 
