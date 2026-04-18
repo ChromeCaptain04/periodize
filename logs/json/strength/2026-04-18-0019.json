@@ -1,0 +1,77 @@
+{
+  "date": "2026-04-18",
+  "type": "weights",
+  "notes": "triceps are sore so going to lower weight than last time on dumbell press, this will also assess wether I have gotten stronger on this movement",
+  "exercises": [
+    {
+      "name": "Flat dumbell press",
+      "sets": [
+        {
+          "weight_kg": 30.0,
+          "reps": 10
+        },
+        {
+          "weight_kg": 30.0,
+          "reps": 8
+        },
+        {
+          "weight_kg": 30.0,
+          "reps": 6,
+          "count": 2
+        }
+      ]
+    },
+    {
+      "name": "Seated dumbell curls",
+      "sets": [
+        {
+          "weight_kg": 17.5,
+          "reps": 5
+        },
+        {
+          "weight_kg": 17.5,
+          "reps": 4,
+          "count": 2
+        },
+        {
+          "weight_kg": 17.5,
+          "reps": 2
+        }
+      ]
+    },
+    {
+      "name": "Skullcrushers",
+      "sets": [
+        {
+          "weight_kg": 30.0,
+          "reps": 7
+        },
+        {
+          "weight_kg": 30.0,
+          "reps": 6
+        },
+        {
+          "weight_kg": 30.0,
+          "reps": 2
+        }
+      ]
+    },
+    {
+      "name": "Reverse barbell curls",
+      "sets": [
+        {
+          "weight_kg": 30.0,
+          "reps": 7
+        },
+        {
+          "weight_kg": 30.0,
+          "reps": 5
+        },
+        {
+          "weight_kg": 30.0,
+          "reps": 4
+        }
+      ]
+    }
+  ]
+}
