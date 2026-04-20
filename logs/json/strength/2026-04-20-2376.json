@@ -1,0 +1,49 @@
+{
+  "date": "2026-04-20",
+  "type": "weights",
+  "notes": "bar is actually 12.5kg not 20kg. Incredibly easy reps for the first deadlift set",
+  "exercises": [
+    {
+      "name": "Deadlift",
+      "sets": [
+        {
+          "weight_kg": 132.5,
+          "reps": 3,
+          "count": 4
+        }
+      ]
+    },
+    {
+      "name": "Chin ups",
+      "sets": [
+        {
+          "weight_kg": 0.0,
+          "reps": 3,
+          "count": 2
+        },
+        {
+          "weight_kg": 0.0,
+          "reps": 5
+        },
+        {
+          "weight_kg": 0.0,
+          "reps": 0
+        }
+      ]
+    },
+    {
+      "name": "Wrist curls",
+      "sets": [
+        {
+          "weight_kg": 17.5,
+          "reps": 8,
+          "count": 3
+        },
+        {
+          "weight_kg": 17.5,
+          "reps": 6
+        }
+      ]
+    }
+  ]
+}
