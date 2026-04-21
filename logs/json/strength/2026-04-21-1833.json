@@ -1,0 +1,84 @@
+{
+  "date": "2026-04-21",
+  "type": "weights",
+  "notes": "shoulder a bit dodgy, need to focus on warming up rotator cuff before pressing and pull-ups",
+  "exercises": [
+    {
+      "name": "Flat dumbell press",
+      "sets": [
+        {
+          "weight_kg": 32.5,
+          "reps": 7
+        },
+        {
+          "weight_kg": 32.5,
+          "reps": 5
+        },
+        {
+          "weight_kg": 32.5,
+          "reps": 4
+        },
+        {
+          "weight_kg": 32.5,
+          "reps": 5
+        }
+      ]
+    },
+    {
+      "name": "Seated dumbell curls",
+      "sets": [
+        {
+          "weight_kg": 17.5,
+          "reps": 6
+        },
+        {
+          "weight_kg": 17.5,
+          "reps": 5
+        },
+        {
+          "weight_kg": 17.5,
+          "reps": 4
+        },
+        {
+          "weight_kg": 17.5,
+          "reps": 3
+        }
+      ]
+    },
+    {
+      "name": "Skullcrushers",
+      "sets": [
+        {
+          "weight_kg": 30.0,
+          "reps": 6,
+          "count": 2
+        },
+        {
+          "weight_kg": 30.0,
+          "reps": 5
+        },
+        {
+          "weight_kg": 30.0,
+          "reps": 4
+        }
+      ]
+    },
+    {
+      "name": "Reverse barbell curls",
+      "sets": [
+        {
+          "weight_kg": 30.0,
+          "reps": 9
+        },
+        {
+          "weight_kg": 30.0,
+          "reps": 7
+        },
+        {
+          "weight_kg": 30.0,
+          "reps": 5
+        }
+      ]
+    }
+  ]
+}
