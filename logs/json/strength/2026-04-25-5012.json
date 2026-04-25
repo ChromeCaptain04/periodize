@@ -1,0 +1,44 @@
+{
+  "date": "2026-04-25",
+  "type": "weights",
+  "notes": "in PureGym with dad, is too hot for bicep curls",
+  "exercises": [
+    {
+      "name": "Flat dumbell press",
+      "sets": [
+        {
+          "weight_kg": 34.0,
+          "reps": 3
+        },
+        {
+          "weight_kg": 34.0,
+          "reps": 6
+        },
+        {
+          "weight_kg": 34.0,
+          "reps": 3
+        }
+      ]
+    },
+    {
+      "name": "Triceps pushdowns",
+      "sets": [
+        {
+          "weight_kg": 26.0,
+          "reps": 7,
+          "count": 3
+        }
+      ]
+    },
+    {
+      "name": "Single arm tricep extensions",
+      "sets": [
+        {
+          "weight_kg": 7.0,
+          "reps": 7,
+          "count": 2
+        }
+      ]
+    }
+  ]
+}
